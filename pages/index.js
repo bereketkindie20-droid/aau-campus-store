@@ -10,13 +10,26 @@ const PRODUCTS = [
 
 export default function Home() {
   const [cart, setCart] = useState([]);
+  const [studentInfo, setStudentInfo] = useState({
+    name: '',
+    contact: '',
+    campus: '',
+  });
 
   const addToCart = (product) => {
     setCart([...cart, product]);
   };
 
   const handleCheckout = async () => {
-    if (cart.length === 0) return;
+    if (cart.length === 0) {
+      alert('Your cart is empty!');
+      return;
+    }
+
+    if (!studentInfo.name || !studentInfo.contact || !studentInfo.campus) {
+      alert('Please fill in your Name, Phone/Telegram, and Campus info before placing an order.');
+      return;
+    }
 
     try {
       const response = await fetch('/api/order', {
@@ -25,13 +38,14 @@ export default function Home() {
         body: JSON.stringify({
           items: cart.map(item => ({ ...item, quantity: 1 })),
           total: cart.reduce((sum, item) => sum + item.price, 0),
-          studentInfo: { name: 'AAU Student', contact: 'Telegram Direct', campus: 'Main Campus' }
+          studentInfo: studentInfo,
         }),
       });
 
       if (response.ok) {
         alert('Order placed successfully! We will contact you shortly.');
         setCart([]);
+        setStudentInfo({ name: '', contact: '', campus: '' });
       } else {
         alert('Failed to place order. Please try again.');
       }
@@ -70,9 +84,34 @@ export default function Home() {
             {cart.map((c, i) => (
               <p key={i} style={{ margin: '4px 0', fontSize: '14px' }}>{c.name} - <b>{c.price} ETB</b></p>
             ))}
+
+            <div style={{ marginTop: '15px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <input 
+                type="text" 
+                placeholder="Your Full Name" 
+                value={studentInfo.name}
+                onChange={(e) => setStudentInfo({ ...studentInfo, name: e.target.value })}
+                style={{ padding: '8px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px' }}
+              />
+              <input 
+                type="text" 
+                placeholder="Phone Number / Telegram Username" 
+                value={studentInfo.contact}
+                onChange={(e) => setStudentInfo({ ...studentInfo, contact: e.target.value })}
+                style={{ padding: '8px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px' }}
+              />
+              <input 
+                type="text" 
+                placeholder="Campus / Dorm (e.g. 6 Kilo, Block 4)" 
+                value={studentInfo.campus}
+                onChange={(e) => setStudentInfo({ ...studentInfo, campus: e.target.value })}
+                style={{ padding: '8px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px' }}
+              />
+            </div>
+
             <button 
               onClick={handleCheckout}
-              style={{ background: '#16a34a', color: '#fff', border: 'none', padding: '10px', borderRadius: '6px', width: '100%', marginTop: '10px', fontWeight: 'bold', cursor: 'pointer' }}>
+              style={{ background: '#16a34a', color: '#fff', border: 'none', padding: '10px', borderRadius: '6px', width: '100%', marginTop: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
               Checkout (Pay on Pickup)
             </button>
           </div>
