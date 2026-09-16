@@ -15,6 +15,32 @@ export default function Home() {
     setCart([...cart, product]);
   };
 
+  const handleCheckout = async () => {
+    if (cart.length === 0) return;
+
+    try {
+      const response = await fetch('/api/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: cart.map(item => ({ ...item, quantity: 1 })),
+          total: cart.reduce((sum, item) => sum + item.price, 0),
+          studentInfo: { name: 'AAU Student', contact: 'Telegram Direct', campus: 'Main Campus' }
+        }),
+      });
+
+      if (response.ok) {
+        alert('Order placed successfully! We will contact you shortly.');
+        setCart([]);
+      } else {
+        alert('Failed to place order. Please try again.');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Something went wrong. Please try again.');
+    }
+  };
+
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif', backgroundColor: '#f8fafc', minHeight: '100vh' }}>
       <h1 style={{ color: '#1e293b', textAlign: 'center' }}>AAU Campus Store</h1>
@@ -45,8 +71,8 @@ export default function Home() {
               <p key={i} style={{ margin: '4px 0', fontSize: '14px' }}>{c.name} - <b>{c.price} ETB</b></p>
             ))}
             <button 
-              onClick={() => alert('Order Placed! Delivery arranged at campus pickup.')}
-              style={{ background: '#16a34a', color: '#fff', border: 'none', padding: '10px', borderRadius: '6px', width: '100%', marginTop: '10px', fontWeight: 'bold' }}>
+              onClick={handleCheckout}
+              style={{ background: '#16a34a', color: '#fff', border: 'none', padding: '10px', borderRadius: '6px', width: '100%', marginTop: '10px', fontWeight: 'bold', cursor: 'pointer' }}>
               Checkout (Pay on Pickup)
             </button>
           </div>
