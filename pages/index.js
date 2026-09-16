@@ -40,12 +40,40 @@ export default function Home() {
   });
 
   const addToCart = (product) => {
-    setCart([...cart, product]);
+    setCart((prevCart) => {
+      const existing = prevCart.find((item) => item.id === product.id);
+      if (existing) {
+        return prevCart.map((item) =>
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prevCart, { ...product, quantity: 1 }];
+    });
+  };
+
+  const updateQuantity = (id, delta) => {
+    setCart((prevCart) =>
+      prevCart
+        .map((item) => {
+          if (item.id === id) {
+            const newQty = item.quantity + delta;
+            return newQty > 0 ? { ...item, quantity: newQty } : null;
+          }
+          return item;
+        })
+        .filter(Boolean)
+    );
+  };
+
+  const removeFromCart = (id) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
   const filteredProducts = activeCategory === 'All'
     ? PRODUCTS
-    : PRODUCTS.filter(p => p.category === activeCategory);
+    : PRODUCTS.filter((p) => p.category === activeCategory);
+
+  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleCheckout = async () => {
     if (cart.length === 0) {
@@ -63,8 +91,8 @@ export default function Home() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          items: cart.map(item => ({ ...item, quantity: 1 })),
-          total: cart.reduce((sum, item) => sum + item.price, 0),
+          items: cart,
+          total: cartTotal,
           studentInfo: studentInfo,
         }),
       });
@@ -131,14 +159,29 @@ export default function Home() {
 
       {/* Cart & Checkout Section */}
       <div style={{ marginTop: '30px', padding: '15px', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-        <h3>Cart ({cart.length} items)</h3>
+        <h3>Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)} items)</h3>
         {cart.length === 0 ? (
           <p style={{ color: '#94a3b8' }}>Your cart is empty.</p>
         ) : (
           <div>
-            {cart.map((c, i) => (
-              <p key={i} style={{ margin: '4px 0', fontSize: '14px' }}>{c.name} - <b>{c.price} ETB</b></p>
+            {cart.map((c) => (
+              <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '8px 0', paddingBottom: '8px', borderBottom: '1px solid #f1f5f9' }}>
+                <div>
+                  <p style={{ margin: '0', fontSize: '14px', fontWeight: 'bold' }}>{c.name}</p>
+                  <p style={{ margin: '0', fontSize: '12px', color: '#2563eb' }}>{c.price} ETB x {c.quantity} = {c.price * c.quantity} ETB</p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <button onClick={() => updateQuantity(c.id, -1)} style={{ padding: '2px 8px', borderRadius: '4px', border: '1px solid #cbd5e1', cursor: 'pointer' }}>-</button>
+                  <span style={{ fontSize: '14px', fontWeight: 'bold' }}>{c.quantity}</span>
+                  <button onClick={() => updateQuantity(c.id, 1)} style={{ padding: '2px 8px', borderRadius: '4px', border: '1px solid #cbd5e1', cursor: 'pointer' }}>+</button>
+                  <button onClick={() => removeFromCart(c.id)} style={{ padding: '2px 8px', borderRadius: '4px', border: 'none', background: '#ef4444', color: '#fff', cursor: 'pointer', fontSize: '12px', marginLeft: '4px' }}>✕</button>
+                </div>
+              </div>
             ))}
+
+            <p style={{ textAlign: 'right', fontWeight: 'bold', fontSize: '16px', color: '#0f172a', marginTop: '10px' }}>
+              Total: {cartTotal} ETB
+            </p>
 
             <div style={{ marginTop: '15px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <input 
