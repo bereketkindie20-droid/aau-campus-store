@@ -111,13 +111,13 @@ export default function Home() {
   };
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif', backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+    <div style={{ padding: '16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#f1f5f9', minHeight: '100vh', maxWidth: '600px', margin: '0 auto' }}>
+      
       {/* Header Section */}
-      <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-        <h1 style={{ color: '#1e293b', margin: '0 0 4px 0' }}>AAU Campus Store</h1>
-        <p style={{ color: '#64748b', margin: '0 0 10px 0', fontSize: '14px' }}>Tech • Fashion • Apparel • Dorm Essentials</p>
+      <div style={{ textAlign: 'center', marginBottom: '20px', background: '#fff', padding: '16px', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+        <h1 style={{ color: '#0f172a', margin: '0 0 4px 0', fontSize: '22px' }}>AAU Campus Store</h1>
+        <p style={{ color: '#64748b', margin: '0 0 12px 0', fontSize: '13px' }}>Tech • Fashion • Apparel • Dorm Essentials</p>
         
-        {/* Telegram Direct Support Link */}
         <a 
           href="https://t.me/bekivisuals1221" 
           target="_blank" 
@@ -126,34 +126,34 @@ export default function Home() {
             display: 'inline-block',
             backgroundColor: '#0088cc',
             color: '#ffffff',
-            padding: '6px 14px',
+            padding: '8px 16px',
             borderRadius: '20px',
             textDecoration: 'none',
             fontSize: '12px',
             fontWeight: 'bold',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
           }}
         >
-          💬 Need help? Message @bekivisuals1221 on Telegram
+          💬 Support: @bekivisuals1221
         </a>
       </div>
 
       {/* Category Tabs */}
-      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '10px', marginTop: '15px' }}>
+      <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px', marginBottom: '16px', WebkitOverflowScrolling: 'touch' }}>
         {CATEGORIES.map((cat) => (
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
             style={{
-              padding: '6px 14px',
+              padding: '8px 16px',
               borderRadius: '20px',
               border: 'none',
-              backgroundColor: activeCategory === cat ? '#2563eb' : '#e2e8f0',
-              color: activeCategory === cat ? '#fff' : '#334155',
+              backgroundColor: activeCategory === cat ? '#2563eb' : '#fff',
+              color: activeCategory === cat ? '#fff' : '#475569',
               fontSize: '13px',
-              fontWeight: 'bold',
+              fontWeight: '600',
               cursor: 'pointer',
               whiteSpace: 'nowrap',
+              boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
             }}
           >
             {cat}
@@ -161,78 +161,81 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Product Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '15px' }}>
+      {/* Product List (Single Column for Clean Mobile View) */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {filteredProducts.map((item) => (
-          <div key={item.id} style={{ background: '#fff', padding: '15px', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div>
-              <div style={{ fontSize: '40px' }}>{item.image}</div>
-              <h4 style={{ margin: '8px 0 4px', fontSize: '14px', color: '#0f172a' }}>{item.name}</h4>
-              <span style={{ fontSize: '11px', color: '#64748b', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>{item.category}</span>
-              <p style={{ color: '#2563eb', fontWeight: 'bold', margin: '8px 0' }}>{item.price} ETB</p>
+          <div key={item.id} style={{ background: '#fff', padding: '14px', borderRadius: '12px', boxShadow: '0 1px 2px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ fontSize: '32px', background: '#f8fafc', padding: '10px', borderRadius: '10px' }}>{item.image}</div>
+              <div>
+                <h4 style={{ margin: '0 0 2px', fontSize: '14px', color: '#0f172a' }}>{item.name}</h4>
+                <span style={{ fontSize: '11px', color: '#64748b', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>{item.category}</span>
+                <p style={{ color: '#2563eb', fontWeight: 'bold', margin: '4px 0 0', fontSize: '14px' }}>{item.price} ETB</p>
+              </div>
             </div>
             <button 
               onClick={() => addToCart(item)}
-              style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', cursor: 'pointer', width: '100%' }}>
-              Add to Cart
+              style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', height: 'fit-content' }}>
+              + Add
             </button>
           </div>
         ))}
       </div>
 
       {/* Cart & Checkout Section */}
-      <div style={{ marginTop: '30px', padding: '15px', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-        <h3>Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)} items)</h3>
+      <div style={{ marginTop: '24px', padding: '16px', background: '#fff', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+        <h3 style={{ margin: '0 0 12px', fontSize: '16px', color: '#0f172a' }}>🛒 Cart ({cart.reduce((sum, item) => sum + item.quantity, 0)} items)</h3>
         {cart.length === 0 ? (
-          <p style={{ color: '#94a3b8' }}>Your cart is empty.</p>
+          <p style={{ color: '#94a3b8', fontSize: '14px', margin: '0' }}>Your cart is empty. Tap "+ Add" on any item above.</p>
         ) : (
           <div>
             {cart.map((c) => (
-              <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '8px 0', paddingBottom: '8px', borderBottom: '1px solid #f1f5f9' }}>
+              <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '10px 0', paddingBottom: '10px', borderBottom: '1px solid #f1f5f9' }}>
                 <div>
-                  <p style={{ margin: '0', fontSize: '14px', fontWeight: 'bold' }}>{c.name}</p>
-                  <p style={{ margin: '0', fontSize: '12px', color: '#2563eb' }}>{c.price} ETB x {c.quantity} = {c.price * c.quantity} ETB</p>
+                  <p style={{ margin: '0', fontSize: '13px', fontWeight: '600', color: '#1e293b' }}>{c.name}</p>
+                  <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#2563eb' }}>{c.price} ETB × {c.quantity} = {c.price * c.quantity} ETB</p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <button onClick={() => updateQuantity(c.id, -1)} style={{ padding: '2px 8px', borderRadius: '4px', border: '1px solid #cbd5e1', cursor: 'pointer' }}>-</button>
-                  <span style={{ fontSize: '14px', fontWeight: 'bold' }}>{c.quantity}</span>
-                  <button onClick={() => updateQuantity(c.id, 1)} style={{ padding: '2px 8px', borderRadius: '4px', border: '1px solid #cbd5e1', cursor: 'pointer' }}>+</button>
-                  <button onClick={() => removeFromCart(c.id)} style={{ padding: '2px 8px', borderRadius: '4px', border: 'none', background: '#ef4444', color: '#fff', cursor: 'pointer', fontSize: '12px', marginLeft: '4px' }}>✕</button>
+                  <button onClick={() => updateQuantity(c.id, -1)} style={{ width: '26px', height: '26px', borderRadius: '6px', border: '1px solid #cbd5e1', background: '#fff', cursor: 'pointer', fontWeight: 'bold' }}>-</button>
+                  <span style={{ fontSize: '13px', fontWeight: 'bold', minWidth: '16px', textAlign: 'center' }}>{c.quantity}</span>
+                  <button onClick={() => updateQuantity(c.id, 1)} style={{ width: '26px', height: '26px', borderRadius: '6px', border: '1px solid #cbd5e1', background: '#fff', cursor: 'pointer', fontWeight: 'bold' }}>+</button>
+                  <button onClick={() => removeFromCart(c.id)} style={{ width: '26px', height: '26px', borderRadius: '6px', border: 'none', background: '#fee2e2', color: '#ef4444', cursor: 'pointer', fontSize: '12px', marginLeft: '4px' }}>✕</button>
                 </div>
               </div>
             ))}
 
-            <p style={{ textAlign: 'right', fontWeight: 'bold', fontSize: '16px', color: '#0f172a', marginTop: '10px' }}>
-              Total: {cartTotal} ETB
-            </p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '14px', paddingTop: '10px', borderTop: '2px solid #f1f5f9' }}>
+              <span style={{ fontSize: '14px', color: '#64748b' }}>Total Amount:</span>
+              <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a' }}>{cartTotal} ETB</span>
+            </div>
 
-            <div style={{ marginTop: '15px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <input 
                 type="text" 
                 placeholder="Your Full Name" 
                 value={studentInfo.name}
                 onChange={(e) => setStudentInfo({ ...studentInfo, name: e.target.value })}
-                style={{ padding: '8px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px' }}
+                style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none' }}
               />
               <input 
                 type="text" 
                 placeholder="Phone Number / Telegram Username" 
                 value={studentInfo.contact}
                 onChange={(e) => setStudentInfo({ ...studentInfo, contact: e.target.value })}
-                style={{ padding: '8px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px' }}
+                style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none' }}
               />
               <input 
                 type="text" 
                 placeholder="Campus / Dorm (e.g. 6 Kilo, Block 4)" 
                 value={studentInfo.campus}
                 onChange={(e) => setStudentInfo({ ...studentInfo, campus: e.target.value })}
-                style={{ padding: '8px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px' }}
+                style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none' }}
               />
             </div>
 
             <button 
               onClick={handleCheckout}
-              style={{ background: '#16a34a', color: '#fff', border: 'none', padding: '10px', borderRadius: '6px', width: '100%', marginTop: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+              style={{ background: '#16a34a', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', width: '100%', marginTop: '16px', fontSize: '15px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 2px 4px rgba(22,163,74,0.2)' }}>
               Checkout (Pay on Pickup)
             </button>
           </div>
