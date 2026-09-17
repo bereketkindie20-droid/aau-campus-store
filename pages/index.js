@@ -112,8 +112,31 @@ export default function Home() {
 
   return (
     <div style={{ padding: '20px', fontFamily: 'sans-serif', backgroundColor: '#f8fafc', minHeight: '100vh' }}>
-      <h1 style={{ color: '#1e293b', textAlign: 'center', marginBottom: '4px' }}>AAU Campus Store</h1>
-      <p style={{ textAlign: 'center', color: '#64748b', marginTop: '0' }}>Tech • Fashion • Apparel • Dorm Essentials</p>
+      {/* Header Section */}
+      <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+        <h1 style={{ color: '#1e293b', margin: '0 0 4px 0' }}>AAU Campus Store</h1>
+        <p style={{ color: '#64748b', margin: '0 0 10px 0', fontSize: '14px' }}>Tech • Fashion • Apparel • Dorm Essentials</p>
+        
+        {/* Telegram Direct Support Link */}
+        <a 
+          href="https://t.me/bekivisuals1221" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style={{
+            display: 'inline-block',
+            backgroundColor: '#0088cc',
+            color: '#ffffff',
+            padding: '6px 14px',
+            borderRadius: '20px',
+            textDecoration: 'none',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+          }}
+        >
+          💬 Need help? Message @bekivisuals1221 on Telegram
+        </a>
+      </div>
 
       {/* Category Tabs */}
       <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '10px', marginTop: '15px' }}>
