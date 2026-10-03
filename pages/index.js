@@ -36,6 +36,15 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [studentInfo, setStudentInfo] = useState({ name: '', contact: '', campus: '' });
 
+  const scrollToCheckout = () => {
+    setTimeout(() => {
+      const checkoutElement = document.getElementById('checkout-section');
+      if (checkoutElement) {
+        checkoutElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+
   const addToCart = (product) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
@@ -44,6 +53,8 @@ export default function Home() {
       }
       return [...prev, { ...product, quantity: 1 }];
     });
+
+    scrollToCheckout();
   };
 
   const updateQuantity = (id, delta) => {
@@ -68,13 +79,6 @@ export default function Home() {
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  const scrollToCheckout = () => {
-    const checkoutElement = document.getElementById('checkout-section');
-    if (checkoutElement) {
-      checkoutElement.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   const handleCheckout = () => {
     if (cart.length === 0) {
@@ -102,7 +106,7 @@ export default function Home() {
   };
 
   return (
-    <div style={{ padding: '16px 16px 100px 16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#f1f5f9', minHeight: '100vh', maxWidth: '600px', margin: '0 auto' }}>
+    <div style={{ padding: '16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#f1f5f9', minHeight: '100vh', maxWidth: '600px', margin: '0 auto' }}>
       
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '16px', background: '#fff', padding: '16px', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
@@ -197,56 +201,6 @@ export default function Home() {
           </div>
         )}
       </div>
-
-      {/* FLOATING STICKY QUICK-CART BAR */}
-      {cartItemCount > 0 && (
-        <div style={{
-          position: 'fixed',
-          bottom: '16px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 'calc(100% - 32px)',
-          maxWidth: '560px',
-          backgroundColor: '#0f172a',
-          color: '#ffffff',
-          padding: '12px 18px',
-          borderRadius: '16px',
-          display: 'flex',
-          justify: 'space-between',
-          alignItems: 'center',
-          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)',
-          zIndex: 999,
-          animation: 'slideUp 0.3s ease-out',
-        }}>
-          <div>
-            <div style={{ fontSize: '13px', color: '#94a3b8' }}>
-              🛒 <strong style={{ color: '#fff' }}>{cartItemCount}</strong> {cartItemCount === 1 ? 'item' : 'items'}
-            </div>
-            <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#22c55e' }}>
-              {cartTotal} ETB
-            </div>
-          </div>
-
-          <button
-            onClick={scrollToCheckout}
-            style={{
-              backgroundColor: '#2563eb',
-              color: '#ffffff',
-              border: 'none',
-              padding: '10px 18px',
-              borderRadius: '10px',
-              fontWeight: 'bold',
-              fontSize: '13px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            View Cart & Checkout ↓
-          </button>
-        </div>
-      )}
 
     </div>
   );
