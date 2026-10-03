@@ -40,7 +40,6 @@ export default function Home() {
     campus: '',
   });
 
-  // Modal State
   const [orderSuccessModal, setOrderSuccessModal] = useState(null);
 
   const addToCart = (product) => {
@@ -81,7 +80,7 @@ export default function Home() {
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (cart.length === 0) {
       alert('Your cart is empty!');
       return;
@@ -97,34 +96,32 @@ export default function Home() {
     const completedTotal = cartTotal;
     const completedInfo = { ...studentInfo };
 
-    try {
-      const response = await fetch('/api/order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orderId,
-          items: completedCart,
-          total: completedTotal,
-          studentInfo: completedInfo,
-        }),
-      });
+    // Format Telegram direct message text
+    const itemsList = completedCart
+      .map((item) => `• ${item.name} (${item.quantity}x) - ${item.price * item.quantity} ETB`)
+      .join('\n');
 
-      if (response.ok) {
-        setOrderSuccessModal({
-          orderId,
-          items: completedCart,
-          total: completedTotal,
-          studentInfo: completedInfo,
-        });
-        setCart([]);
-        setStudentInfo({ name: '', contact: '', campus: '' });
-      } else {
-        alert('Failed to place order. Please try again.');
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('Something went wrong. Please try again.');
-    }
+    const messageText = `🛍️ *NEW AAU STORE ORDER* (${orderId})\n\n` +
+      `👤 *Customer:* ${completedInfo.name}\n` +
+      `📞 *Contact:* ${completedInfo.contact}\n` +
+      `📍 *Location:* ${completedInfo.campus}\n\n` +
+      `📦 *Items Ordered:*\n${itemsList}\n\n` +
+      `💰 *Total Amount:* ${completedTotal} ETB\n` +
+      `💳 *Payment:* Pay on Pickup`;
+
+    const telegramUrl = `https://t.me/bekivisuals1221?text=${encodeURIComponent(messageText)}`;
+
+    // Show Order Success Modal with Telegram Link
+    setOrderSuccessModal({
+      orderId,
+      items: completedCart,
+      total: completedTotal,
+      studentInfo: completedInfo,
+      telegramUrl,
+    });
+
+    setCart([]);
+    setStudentInfo({ name: '', contact: '', campus: '' });
   };
 
   return (
@@ -333,7 +330,7 @@ export default function Home() {
               ✓
             </div>
 
-            <h2 style={{ margin: '0 0 4px', fontSize: '20px', color: '#0f172a' }}>Order Placed!</h2>
+            <h2 style={{ margin: '0 0 4px', fontSize: '20px', color: '#0f172a' }}>Order Created!</h2>
             <p style={{ margin: '0 0 16px', fontSize: '13px', color: '#64748b' }}>Reference ID: <strong style={{ color: '#2563eb' }}>{orderSuccessModal.orderId}</strong></p>
 
             <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '12px', textAlign: 'left', marginBottom: '16px', fontSize: '13px' }}>
@@ -344,25 +341,42 @@ export default function Home() {
               <p style={{ margin: '6px 0 0', fontWeight: 'bold', color: '#16a34a', borderTop: '1px solid #e2e8f0', paddingTop: '6px' }}>Total Due on Pickup: {orderSuccessModal.total} ETB</p>
             </div>
 
-            <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 20px' }}>
-              We have sent this order to Telegram. Our campus courier will message/call you shortly to schedule pickup!
-            </p>
+            <a
+              href={orderSuccessModal.telegramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'block',
+                width: '100%',
+                background: '#0088cc',
+                color: '#ffffff',
+                textDecoration: 'none',
+                padding: '14px',
+                borderRadius: '10px',
+                fontSize: '15px',
+                fontWeight: 'bold',
+                marginBottom: '10px',
+                boxSizing: 'border-box'
+              }}
+            >
+              🚀 Send Order via Telegram
+            </a>
 
             <button
               onClick={() => setOrderSuccessModal(null)}
               style={{
                 width: '100%',
-                background: '#2563eb',
-                color: '#ffffff',
+                background: '#f1f5f9',
+                color: '#475569',
                 border: 'none',
-                padding: '12px',
+                padding: '10px',
                 borderRadius: '10px',
-                fontSize: '14px',
-                fontWeight: 'bold',
+                fontSize: '13px',
+                fontWeight: '600',
                 cursor: 'pointer'
               }}
             >
-              Done & Return to Store
+              Close
             </button>
           </div>
         </div>
