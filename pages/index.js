@@ -20,7 +20,7 @@ const PRODUCTS = [
   // Footwear & Style Accessories
   { id: 11, name: 'Casual Canvas Shoes', price: 2400, category: 'Footwear & Style', image: '👟' },
   { id: 12, name: 'Long-Lasting Fresh Campus Perfume (50ml)', price: 1100, category: 'Footwear & Style', image: '✨' },
-  { id: 13, name: 'Canvas Tote Bag for Lectures', price: 650, category: 'Footwear & Style', image: '🛍️' },
+  { id: 13, name: 'Canvas Tote Bag for Lectures', price: 650, category: 'Footwear & Style', image: '🛍' },
 
   // Dorm & Academic Essentials
   { id: 14, name: 'Dorm LED Desk Study Lamp', price: 850, category: 'Dorm Essentials', image: '💡' },
@@ -33,6 +33,7 @@ const CATEGORIES = ['All', 'Phones & Audio', 'Tech & Wearables', 'Clothing & App
 export default function Home() {
   const [cart, setCart] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
   const [studentInfo, setStudentInfo] = useState({
     name: '',
     contact: '',
@@ -69,9 +70,12 @@ export default function Home() {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
-  const filteredProducts = activeCategory === 'All'
-    ? PRODUCTS
-    : PRODUCTS.filter((p) => p.category === activeCategory);
+  // Filter products by category AND search query
+  const filteredProducts = PRODUCTS.filter((item) => {
+    const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
+    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -114,7 +118,7 @@ export default function Home() {
     <div style={{ padding: '16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#f1f5f9', minHeight: '100vh', maxWidth: '600px', margin: '0 auto' }}>
       
       {/* Header Section */}
-      <div style={{ textAlign: 'center', marginBottom: '20px', background: '#fff', padding: '16px', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+      <div style={{ textAlign: 'center', marginBottom: '16px', background: '#fff', padding: '16px', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
         <h1 style={{ color: '#0f172a', margin: '0 0 4px 0', fontSize: '22px' }}>AAU Campus Store</h1>
         <p style={{ color: '#64748b', margin: '0 0 12px 0', fontSize: '13px' }}>Tech • Fashion • Apparel • Dorm Essentials</p>
         
@@ -135,6 +139,27 @@ export default function Home() {
         >
           💬 Support: @bekivisuals1221
         </a>
+      </div>
+
+      {/* Search Bar */}
+      <div style={{ marginBottom: '12px' }}>
+        <input 
+          type="text"
+          placeholder="🔍 Search products (e.g., hoodie, power bank...)"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '12px 16px',
+            borderRadius: '12px',
+            border: '1px solid #cbd5e1',
+            fontSize: '14px',
+            outline: 'none',
+            backgroundColor: '#fff',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+            boxSizing: 'border-box'
+          }}
+        />
       </div>
 
       {/* Category Tabs */}
@@ -161,25 +186,31 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Product List (Single Column for Clean Mobile View) */}
+      {/* Product List */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        {filteredProducts.map((item) => (
-          <div key={item.id} style={{ background: '#fff', padding: '14px', borderRadius: '12px', boxShadow: '0 1px 2px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ fontSize: '32px', background: '#f8fafc', padding: '10px', borderRadius: '10px' }}>{item.image}</div>
-              <div>
-                <h4 style={{ margin: '0 0 2px', fontSize: '14px', color: '#0f172a' }}>{item.name}</h4>
-                <span style={{ fontSize: '11px', color: '#64748b', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>{item.category}</span>
-                <p style={{ color: '#2563eb', fontWeight: 'bold', margin: '4px 0 0', fontSize: '14px' }}>{item.price} ETB</p>
-              </div>
-            </div>
-            <button 
-              onClick={() => addToCart(item)}
-              style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', height: 'fit-content' }}>
-              + Add
-            </button>
+        {filteredProducts.length === 0 ? (
+          <div style={{ background: '#fff', padding: '24px', borderRadius: '12px', textAlign: 'center', color: '#64748b' }}>
+            <p style={{ margin: '0', fontSize: '14px' }}>No products found matching "{searchQuery}".</p>
           </div>
-        ))}
+        ) : (
+          filteredProducts.map((item) => (
+            <div key={item.id} style={{ background: '#fff', padding: '14px', borderRadius: '12px', boxShadow: '0 1px 2px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ fontSize: '32px', background: '#f8fafc', padding: '10px', borderRadius: '10px' }}>{item.image}</div>
+                <div>
+                  <h4 style={{ margin: '0 0 2px', fontSize: '14px', color: '#0f172a' }}>{item.name}</h4>
+                  <span style={{ fontSize: '11px', color: '#64748b', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>{item.category}</span>
+                  <p style={{ color: '#2563eb', fontWeight: 'bold', margin: '4px 0 0', fontSize: '14px' }}>{item.price} ETB</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => addToCart(item)}
+                style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', height: 'fit-content' }}>
+                + Add
+              </button>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Cart & Checkout Section */}
