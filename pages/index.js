@@ -2,29 +2,29 @@ import { useState } from 'react';
 
 const PRODUCTS = [
   // Phones & Audio
-  { id: 1, name: 'Smart Phone 128GB', price: 28000, category: 'Phones & Audio', image: '📱' },
-  { id: 2, name: 'AirPods Pro (Noise Cancelling)', price: 3200, category: 'Phones & Audio', image: '🎧' },
+  { id: 1, name: 'Smart Phone 128GB', price: 28000, category: 'Phones & Audio', image: '📱', badge: 'POPULAR' },
+  { id: 2, name: 'AirPods Pro (Noise Cancelling)', price: 3200, category: 'Phones & Audio', image: '🎧', badge: 'HOT' },
   { id: 3, name: 'Wireless Over-Ear Headset', price: 1800, category: 'Phones & Audio', image: '🎧' },
   { id: 4, name: 'Fast Charger Cable + Adapter', price: 550, category: 'Phones & Audio', image: '🔌' },
 
   // Tech & Wearables
-  { id: 5, name: 'Smart Watch Series 8', price: 2500, category: 'Tech & Wearables', image: '⌚' },
-  { id: 6, name: '20,000mAh Heavy Duty Power Bank', price: 1800, category: 'Tech & Wearables', image: '🔋' },
+  { id: 5, name: 'Smart Watch Series 8', price: 2500, category: 'Tech & Wearables', image: '⌚', badge: 'NEW' },
+  { id: 6, name: '20,000mAh Heavy Duty Power Bank', price: 1800, category: 'Tech & Wearables', image: '🔋', badge: 'HOT' },
   { id: 7, name: 'USB-C Multi-Port Laptop Hub', price: 1200, category: 'Tech & Wearables', image: '💻' },
 
   // Clothing & Apparel
-  { id: 8, name: 'Oversized Streetwear Hoodie / Jacket', price: 2200, category: 'Clothing & Apparel', image: '🧥' },
+  { id: 8, name: 'Oversized Streetwear Hoodie / Jacket', price: 2200, category: 'Clothing & Apparel', image: '🧥', badge: 'TRENDING' },
   { id: 9, name: 'Wide-Leg Baggy Jeans (Blue)', price: 1800, category: 'Clothing & Apparel', image: '👖' },
   { id: 10, name: 'Campus Sneakers / Running Shoes', price: 3500, category: 'Clothing & Apparel', image: '👟' },
 
   // Footwear & Style Accessories
   { id: 11, name: 'Casual Canvas Shoes', price: 2400, category: 'Footwear & Style', image: '👟' },
   { id: 12, name: 'Long-Lasting Fresh Campus Perfume (50ml)', price: 1100, category: 'Footwear & Style', image: '✨' },
-  { id: 13, name: 'Canvas Tote Bag for Lectures', price: 650, category: 'Footwear & Style', image: '🛍' },
+  { id: 13, name: 'Canvas Tote Bag for Lectures', price: 650, category: 'Footwear & Style', image: '🛍️' },
 
   // Dorm & Academic Essentials
   { id: 14, name: 'Dorm LED Desk Study Lamp', price: 850, category: 'Dorm Essentials', image: '💡' },
-  { id: 15, name: 'Compact Electric Kettle 1.5L', price: 1400, category: 'Dorm Essentials', image: '🫖' },
+  { id: 15, name: 'Compact Electric Kettle 1.5L', price: 1400, category: 'Dorm Essentials', image: '🫖', badge: 'MUST HAVE' },
   { id: 16, name: 'A4 Notebook & Pen Bundle', price: 300, category: 'Dorm Essentials', image: '📝' },
 ];
 
@@ -39,6 +39,9 @@ export default function Home() {
     contact: '',
     campus: '',
   });
+
+  // Modal State
+  const [orderSuccessModal, setOrderSuccessModal] = useState(null);
 
   const addToCart = (product) => {
     setCart((prevCart) => {
@@ -70,7 +73,6 @@ export default function Home() {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
-  // Filter products by category AND search query
   const filteredProducts = PRODUCTS.filter((item) => {
     const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -90,19 +92,30 @@ export default function Home() {
       return;
     }
 
+    const orderId = `AAU-${Math.floor(1000 + Math.random() * 9000)}`;
+    const completedCart = [...cart];
+    const completedTotal = cartTotal;
+    const completedInfo = { ...studentInfo };
+
     try {
       const response = await fetch('/api/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          items: cart,
-          total: cartTotal,
-          studentInfo: studentInfo,
+          orderId,
+          items: completedCart,
+          total: completedTotal,
+          studentInfo: completedInfo,
         }),
       });
 
       if (response.ok) {
-        alert('Order placed successfully! We will contact you shortly.');
+        setOrderSuccessModal({
+          orderId,
+          items: completedCart,
+          total: completedTotal,
+          studentInfo: completedInfo,
+        });
         setCart([]);
         setStudentInfo({ name: '', contact: '', campus: '' });
       } else {
@@ -194,12 +207,19 @@ export default function Home() {
           </div>
         ) : (
           filteredProducts.map((item) => (
-            <div key={item.id} style={{ background: '#fff', padding: '14px', borderRadius: '12px', boxShadow: '0 1px 2px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div key={item.id} style={{ background: '#fff', padding: '14px', borderRadius: '12px', boxShadow: '0 1px 2px rgba(0,0,0,0.04)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div style={{ fontSize: '32px', background: '#f8fafc', padding: '10px', borderRadius: '10px' }}>{item.image}</div>
                 <div>
-                  <h4 style={{ margin: '0 0 2px', fontSize: '14px', color: '#0f172a' }}>{item.name}</h4>
-                  <span style={{ fontSize: '11px', color: '#64748b', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>{item.category}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <h4 style={{ margin: '0', fontSize: '14px', color: '#0f172a' }}>{item.name}</h4>
+                    {item.badge && (
+                      <span style={{ fontSize: '9px', fontWeight: 'bold', background: '#ef4444', color: '#fff', padding: '1px 5px', borderRadius: '4px' }}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
+                  <span style={{ fontSize: '11px', color: '#64748b', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px', display: 'inline-block', marginTop: '4px' }}>{item.category}</span>
                   <p style={{ color: '#2563eb', fontWeight: 'bold', margin: '4px 0 0', fontSize: '14px' }}>{item.price} ETB</p>
                 </div>
               </div>
@@ -272,6 +292,82 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* Modern Order Confirmation Modal */}
+      {orderSuccessModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(15, 23, 42, 0.6)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '16px',
+          zIndex: 1000,
+        }}>
+          <div style={{
+            background: '#ffffff',
+            borderRadius: '20px',
+            padding: '24px',
+            maxWidth: '420px',
+            width: '100%',
+            textAlign: 'center',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            position: 'relative'
+          }}>
+            <div style={{
+              width: '56px',
+              height: '56px',
+              background: '#dcfce7',
+              color: '#16a34a',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '28px',
+              margin: '0 auto 16px auto'
+            }}>
+              ✓
+            </div>
+
+            <h2 style={{ margin: '0 0 4px', fontSize: '20px', color: '#0f172a' }}>Order Placed!</h2>
+            <p style={{ margin: '0 0 16px', fontSize: '13px', color: '#64748b' }}>Reference ID: <strong style={{ color: '#2563eb' }}>{orderSuccessModal.orderId}</strong></p>
+
+            <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '12px', textAlign: 'left', marginBottom: '16px', fontSize: '13px' }}>
+              <p style={{ margin: '0 0 6px', fontWeight: 'bold', color: '#334155' }}>Customer Summary:</p>
+              <p style={{ margin: '2px 0', color: '#475569' }}>👤 <strong>Name:</strong> {orderSuccessModal.studentInfo.name}</p>
+              <p style={{ margin: '2px 0', color: '#475569' }}>📱 <strong>Contact:</strong> {orderSuccessModal.studentInfo.contact}</p>
+              <p style={{ margin: '2px 0', color: '#475569' }}>📍 <strong>Pickup Spot:</strong> {orderSuccessModal.studentInfo.campus}</p>
+              <p style={{ margin: '6px 0 0', fontWeight: 'bold', color: '#16a34a', borderTop: '1px solid #e2e8f0', paddingTop: '6px' }}>Total Due on Pickup: {orderSuccessModal.total} ETB</p>
+            </div>
+
+            <p style={{ fontSize: '12px', color: '#64748b', margin: '0 0 20px' }}>
+              We have sent this order to Telegram. Our campus courier will message/call you shortly to schedule pickup!
+            </p>
+
+            <button
+              onClick={() => setOrderSuccessModal(null)}
+              style={{
+                width: '100%',
+                background: '#2563eb',
+                color: '#ffffff',
+                border: 'none',
+                padding: '12px',
+                borderRadius: '10px',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+            >
+              Done & Return to Store
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
