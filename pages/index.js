@@ -30,11 +30,18 @@ const PRODUCTS = [
 
 const CATEGORIES = ['All', 'Phones & Audio', 'Tech & Wearables', 'Clothing & Apparel', 'Footwear & Style', 'Dorm Essentials'];
 
+const PAYMENT_METHODS = [
+  { id: 'telebirr', name: 'Telebirr', icon: '📱' },
+  { id: 'cbe', name: 'CBE Birr', icon: '🏦' },
+  { id: 'cash', name: 'Cash on Delivery', icon: '💵' },
+];
+
 export default function Home() {
   const [cart, setCart] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [studentInfo, setStudentInfo] = useState({ name: '', contact: '', campus: '' });
+  const [paymentMethod, setPaymentMethod] = useState('telebirr');
 
   const scrollToCheckout = () => {
     setTimeout(() => {
@@ -90,13 +97,15 @@ export default function Home() {
       return;
     }
 
+    const selectedPayment = PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.name || 'Telebirr';
     const orderId = `AAU-${Math.floor(1000 + Math.random() * 9000)}`;
     const itemsList = cart.map((item) => `• ${item.name} (${item.quantity}x) - ${item.price * item.quantity} ETB`).join('\n');
 
     const messageText = `🛍️ NEW AAU STORE ORDER (${orderId})\n\n` +
       `👤 Name: ${studentInfo.name}\n` +
       `📞 Contact: ${studentInfo.contact}\n` +
-      `📍 Location: ${studentInfo.campus}\n\n` +
+      `📍 Location: ${studentInfo.campus}\n` +
+      `💳 Payment Method: ${selectedPayment}\n\n` +
       `📦 Items:\n${itemsList}\n\n` +
       `💰 Total: ${cartTotal} ETB`;
 
@@ -193,9 +202,42 @@ export default function Home() {
               <input type="text" placeholder="Full Name" value={studentInfo.name} onChange={(e) => setStudentInfo({ ...studentInfo, name: e.target.value })} style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none' }} />
               <input type="text" placeholder="Phone Number / Telegram" value={studentInfo.contact} onChange={(e) => setStudentInfo({ ...studentInfo, contact: e.target.value })} style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none' }} />
               <input type="text" placeholder="Campus / Dorm Location" value={studentInfo.campus} onChange={(e) => setStudentInfo({ ...studentInfo, campus: e.target.value })} style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none' }} />
-              
+
+              {/* Payment Method Selector */}
+              <div style={{ marginTop: '6px' }}>
+                <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#475569', marginBottom: '6px', display: 'block' }}>
+                  Select Payment Method:
+                </label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+                  {PAYMENT_METHODS.map((method) => (
+                    <button
+                      key={method.id}
+                      type="button"
+                      onClick={() => setPaymentMethod(method.id)}
+                      style={{
+                        padding: '8px 4px',
+                        borderRadius: '8px',
+                        border: paymentMethod === method.id ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                        backgroundColor: paymentMethod === method.id ? '#eff6ff' : '#fff',
+                        color: paymentMethod === method.id ? '#1d4ed8' : '#475569',
+                        fontSize: '11px',
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '2px',
+                      }}
+                    >
+                      <span style={{ fontSize: '16px' }}>{method.icon}</span>
+                      {method.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <button onClick={handleCheckout} style={{ background: '#16a34a', color: '#fff', padding: '12px', border: 'none', borderRadius: '8px', fontWeight: 'bold', fontSize: '15px', cursor: 'pointer', marginTop: '8px', boxShadow: '0 2px 4px rgba(22,163,74,0.2)' }}>
-                Order via Telegram (Pay on Pickup)
+                Order via Telegram ({PAYMENT_METHODS.find(p => p.id === paymentMethod)?.name})
               </button>
             </div>
           </div>
