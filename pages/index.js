@@ -64,7 +64,7 @@ export default function Home() {
       if (checkoutElement) {
         checkoutElement.scrollIntoView({ behavior: 'smooth' });
       }
-    }, 100);
+    }, 150);
   };
 
   const addToCart = (product, qty = 1) => {
@@ -77,6 +77,7 @@ export default function Home() {
     });
 
     showToast(`✅ Added ${qty}x ${product.name} to cart!`);
+    scrollToCheckout();
   };
 
   const openProductDrawer = (product) => {
@@ -147,7 +148,7 @@ export default function Home() {
   };
 
   return (
-    <div style={{ padding: '16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#f1f5f9', minHeight: '100vh', maxWidth: '600px', margin: '0 auto', position: 'relative', paddingBottom: '80px' }}>
+    <div style={{ padding: '16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#f1f5f9', minHeight: '100vh', maxWidth: '600px', margin: '0 auto', position: 'relative', paddingBottom: '40px' }}>
       
       {/* Toast Notification */}
       {toastMessage && (
@@ -446,36 +447,6 @@ export default function Home() {
           </div>
         )}
       </div>
-
-      {/* Floating Quick Cart Button */}
-      {cartItemCount > 0 && (
-        <button
-          onClick={scrollToCheckout}
-          style={{
-            position: 'fixed',
-            bottom: '20px',
-            right: '20px',
-            backgroundColor: '#2563eb',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '30px',
-            padding: '12px 20px',
-            fontWeight: 'bold',
-            fontSize: '14px',
-            boxShadow: '0 4px 14px rgba(37, 99, 235, 0.4)',
-            cursor: 'pointer',
-            zIndex: 999,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-        >
-          <span>🛒 View Cart ({cartItemCount})</span>
-          <span style={{ background: 'rgba(255,255,255,0.2)', padding: '2px 8px', borderRadius: '12px', fontSize: '12px' }}>
-            {cartTotal} ETB
-          </span>
-        </button>
-      )}
 
       {/* Order Summary Confirmation Modal */}
       {showModal && (
