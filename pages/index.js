@@ -30,6 +30,8 @@ const PRODUCTS = [
 
 const CATEGORIES = ['All', 'Phones & Audio', 'Tech & Wearables', 'Clothing & Apparel', 'Footwear & Style', 'Dorm Essentials'];
 
+const POPULAR_TAGS = ['#PowerBank', '#Hoodie', '#AirPods', '#Kettle', '#Perfume', '#Charger', '#Shoes'];
+
 const PAYMENT_METHODS = [
   { id: 'telebirr', name: 'Telebirr', icon: '📱' },
   { id: 'cbe', name: 'CBE Birr', icon: '🏦' },
@@ -71,7 +73,6 @@ export default function Home() {
     });
 
     showToast(`✅ Added ${product.name} to cart!`);
-    scrollToCheckout();
   };
 
   const updateQuantity = (id, delta) => {
@@ -87,6 +88,15 @@ export default function Home() {
   };
 
   const removeFromCart = (id) => setCart((prev) => prev.filter((item) => item.id !== id));
+
+  const handleTagClick = (tag) => {
+    const cleanTag = tag.replace('#', '');
+    if (searchQuery.toLowerCase() === cleanTag.toLowerCase()) {
+      setSearchQuery('');
+    } else {
+      setSearchQuery(cleanTag);
+    }
+  };
 
   const filteredProducts = PRODUCTS.filter((item) => {
     const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
@@ -128,7 +138,7 @@ export default function Home() {
   };
 
   return (
-    <div style={{ padding: '16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#f1f5f9', minHeight: '100vh', maxWidth: '600px', margin: '0 auto', position: 'relative' }}>
+    <div style={{ padding: '16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#f1f5f9', minHeight: '100vh', maxWidth: '600px', margin: '0 auto', position: 'relative', paddingBottom: '80px' }}>
       
       {/* Toast Notification */}
       {toastMessage && (
@@ -161,15 +171,66 @@ export default function Home() {
         </a>
       </div>
 
-      {/* Search */}
-      <div style={{ marginBottom: '12px' }}>
+      {/* Search Input with Quick Clear Button */}
+      <div style={{ marginBottom: '8px', position: 'relative' }}>
         <input 
           type="text" 
           placeholder="🔍 Search products..." 
           value={searchQuery} 
           onChange={(e) => setSearchQuery(e.target.value)} 
-          style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '14px', backgroundColor: '#fff', boxSizing: 'border-box' }} 
+          style={{ width: '100%', padding: '12px 36px 12px 12px', borderRadius: '12px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '14px', backgroundColor: '#fff', boxSizing: 'border-box' }} 
         />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            style={{
+              position: 'absolute',
+              right: '12px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              border: 'none',
+              background: '#e2e8f0',
+              color: '#475569',
+              borderRadius: '50%',
+              width: '20px',
+              height: '20px',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
+      {/* Campus Hashtag Badges */}
+      <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '10px', marginBottom: '12px', WebkitOverflowScrolling: 'touch' }}>
+        {POPULAR_TAGS.map((tag) => {
+          const isActive = searchQuery.toLowerCase() === tag.replace('#', '').toLowerCase();
+          return (
+            <button
+              key={tag}
+              onClick={() => handleTagClick(tag)}
+              style={{
+                padding: '4px 10px',
+                borderRadius: '12px',
+                border: 'none',
+                backgroundColor: isActive ? '#dbeafe' : '#e2e8f0',
+                color: isActive ? '#1d4ed8' : '#64748b',
+                fontSize: '11px',
+                fontWeight: '600',
+                whiteSpace: 'nowrap',
+                cursor: 'pointer'
+              }}
+            >
+              {tag}
+            </button>
+          );
+        })}
       </div>
 
       {/* Categories */}
@@ -183,27 +244,35 @@ export default function Home() {
 
       {/* Products */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        {filteredProducts.map((item) => (
-          <div key={item.id} style={{ background: '#fff', padding: '14px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 2px rgba(0,0,0,0.04)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ fontSize: '32px', background: '#f8fafc', padding: '10px', borderRadius: '10px' }}>{item.image}</div>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <h4 style={{ margin: '0', fontSize: '14px', color: '#0f172a' }}>{item.name}</h4>
-                  {item.badge && (
-                    <span style={{ fontSize: '9px', fontWeight: 'bold', background: '#ef4444', color: '#fff', padding: '1px 5px', borderRadius: '4px' }}>
-                      {item.badge}
-                    </span>
-                  )}
-                </div>
-                <p style={{ color: '#2563eb', fontWeight: 'bold', margin: '4px 0 0', fontSize: '14px' }}>{item.price} ETB</p>
-              </div>
-            </div>
-            <button onClick={() => addToCart(item)} style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
-              + Add
-            </button>
+        {filteredProducts.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '24px 12px', background: '#fff', borderRadius: '12px', color: '#64748b' }}>
+            <p style={{ margin: '0 0 8px', fontSize: '24px' }}>🔍</p>
+            <p style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>No products found for "{searchQuery}"</p>
+            <button onClick={() => setSearchQuery('')} style={{ marginTop: '10px', border: 'none', background: '#eff6ff', color: '#2563eb', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Clear Search</button>
           </div>
-        ))}
+        ) : (
+          filteredProducts.map((item) => (
+            <div key={item.id} style={{ background: '#fff', padding: '14px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 2px rgba(0,0,0,0.04)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ fontSize: '32px', background: '#f8fafc', padding: '10px', borderRadius: '10px' }}>{item.image}</div>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <h4 style={{ margin: '0', fontSize: '14px', color: '#0f172a' }}>{item.name}</h4>
+                    {item.badge && (
+                      <span style={{ fontSize: '9px', fontWeight: 'bold', background: '#ef4444', color: '#fff', padding: '1px 5px', borderRadius: '4px' }}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
+                  <p style={{ color: '#2563eb', fontWeight: 'bold', margin: '4px 0 0', fontSize: '14px' }}>{item.price} ETB</p>
+                </div>
+              </div>
+              <button onClick={() => addToCart(item)} style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
+                + Add
+              </button>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Cart & Checkout Form Section */}
@@ -278,6 +347,36 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* Floating Quick Cart Button */}
+      {cartItemCount > 0 && (
+        <button
+          onClick={scrollToCheckout}
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            backgroundColor: '#2563eb',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '30px',
+            padding: '12px 20px',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            boxShadow: '0 4px 14px rgba(37, 99, 235, 0.4)',
+            cursor: 'pointer',
+            zIndex: 999,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <span>🛒 View Cart ({cartItemCount})</span>
+          <span style={{ background: 'rgba(255,255,255,0.2)', padding: '2px 8px', borderRadius: '12px', fontSize: '12px' }}>
+            {cartTotal} ETB
+          </span>
+        </button>
+      )}
 
       {/* Order Summary Confirmation Modal */}
       {showModal && (
