@@ -2,30 +2,30 @@ import React, { useState } from 'react';
 
 const PRODUCTS = [
   // Phones & Audio
-  { id: 1, name: 'Smart Phone 128GB', price: 28000, category: 'Phones & Audio', image: '📱', badge: 'POPULAR' },
-  { id: 2, name: 'AirPods Pro (Noise Cancelling)', price: 3200, category: 'Phones & Audio', image: '🎧', badge: 'HOT' },
-  { id: 3, name: 'Wireless Over-Ear Headset', price: 1800, category: 'Phones & Audio', image: '🎧' },
-  { id: 4, name: 'Fast Charger Cable + Adapter', price: 550, category: 'Phones & Audio', image: '🔌' },
+  { id: 1, name: 'Smart Phone 128GB', price: 28000, category: 'Phones & Audio', image: '📱', badge: 'POPULAR', desc: '128GB storage, crisp HD display, long battery life. Perfect for university lectures and media consumption.' },
+  { id: 2, name: 'AirPods Pro (Noise Cancelling)', price: 3200, category: 'Phones & Audio', image: '🎧', badge: 'HOT', desc: 'Active noise cancellation, fast Bluetooth pairing, crystal clear microphone for audio calls.' },
+  { id: 3, name: 'Wireless Over-Ear Headset', price: 1800, category: 'Phones & Audio', image: '🎧', desc: 'Deep bass, soft cushion earmuffs, built-in mic, up to 30 hours of continuous playback.' },
+  { id: 4, name: 'Fast Charger Cable + Adapter', price: 550, category: 'Phones & Audio', image: '🔌', desc: 'PD 20W Fast Charging kit for iPhones and Android smartphones. High durability braided wire.' },
 
   // Tech & Wearables
-  { id: 5, name: 'Smart Watch Series 8', price: 2500, category: 'Tech & Wearables', image: '⌚', badge: 'NEW' },
-  { id: 6, name: '20,000mAh Heavy Duty Power Bank', price: 1800, category: 'Tech & Wearables', image: '🔋', badge: 'HOT' },
-  { id: 7, name: 'USB-C Multi-Port Laptop Hub', price: 1200, category: 'Tech & Wearables', image: '💻' },
+  { id: 5, name: 'Smart Watch Series 8', price: 2500, category: 'Tech & Wearables', image: '⌚', badge: 'NEW', desc: 'Heart rate tracker, fitness modes, notification mirror, stylish metallic dial with silicone band.' },
+  { id: 6, name: '20,000mAh Heavy Duty Power Bank', price: 1800, category: 'Tech & Wearables', image: '🔋', badge: 'HOT', desc: 'Dual USB ports, LED battery indicator, heavy-duty capacity to charge phone up to 5-6 times.' },
+  { id: 7, name: 'USB-C Multi-Port Laptop Hub', price: 1200, category: 'Tech & Wearables', image: '💻', desc: 'Adds HDMI 4K output, 3x USB 3.0 ports, SD card reader, and Type-C passthrough charging.' },
 
   // Clothing & Apparel
-  { id: 8, name: 'Oversized Streetwear Hoodie / Jacket', price: 2200, category: 'Clothing & Apparel', image: '🧥', badge: 'TRENDING' },
-  { id: 9, name: 'Wide-Leg Baggy Jeans (Blue)', price: 1800, category: 'Clothing & Apparel', image: '👖' },
-  { id: 10, name: 'Campus Sneakers / Running Shoes', price: 3500, category: 'Clothing & Apparel', image: '👟' },
+  { id: 8, name: 'Oversized Streetwear Hoodie / Jacket', price: 2200, category: 'Clothing & Apparel', image: '🧥', badge: 'TRENDING', desc: 'Ultra-soft fleece inner lining, relaxed fit streetwear style, suitable for cool campus weather.' },
+  { id: 9, name: 'Wide-Leg Baggy Jeans (Blue)', price: 1800, category: 'Clothing & Apparel', image: '👖', desc: 'High quality denim, wide-leg aesthetic fit, durable stitching for daily campus wear.' },
+  { id: 10, name: 'Campus Sneakers / Running Shoes', price: 3500, category: 'Clothing & Apparel', image: '👟', desc: 'Lightweight breathable mesh material, cushioned sole for comfortable long walk across campus.' },
 
   // Footwear & Style Accessories
-  { id: 11, name: 'Casual Canvas Shoes', price: 2400, category: 'Footwear & Style', image: '👟' },
-  { id: 12, name: 'Long-Lasting Fresh Campus Perfume (50ml)', price: 1100, category: 'Footwear & Style', image: '✨' },
-  { id: 13, name: 'Canvas Tote Bag for Lectures', price: 650, category: 'Footwear & Style', image: '🛍️' },
+  { id: 11, name: 'Casual Canvas Shoes', price: 2400, category: 'Footwear & Style', image: '👟', desc: 'Classic canvas style, vulcanized rubber sole, matches all casual streetwear outfits.' },
+  { id: 12, name: 'Long-Lasting Fresh Campus Perfume (50ml)', price: 1100, category: 'Footwear & Style', image: '✨', desc: 'Fresh citrus & woody fragrance notes. Long lasting scent designed for active student day.' },
+  { id: 13, name: 'Canvas Tote Bag for Lectures', price: 650, category: 'Footwear & Style', image: '🛍️', desc: 'Heavy canvas material, holds laptops, books, water bottles, with inner zipper pocket.' },
 
   // Dorm & Academic Essentials
-  { id: 14, name: 'Dorm LED Desk Study Lamp', price: 850, category: 'Dorm Essentials', image: '💡' },
-  { id: 15, name: 'Compact Electric Kettle 1.5L', price: 1400, category: 'Dorm Essentials', image: '🫖', badge: 'MUST HAVE' },
-  { id: 16, name: 'A4 Notebook & Pen Bundle', price: 300, category: 'Dorm Essentials', image: '📝' },
+  { id: 14, name: 'Dorm LED Desk Study Lamp', price: 850, category: 'Dorm Essentials', image: '💡', desc: 'Touch controls, 3 lighting modes (warm/white/mixed), rechargeable built-in battery.' },
+  { id: 15, name: 'Compact Electric Kettle 1.5L', price: 1400, category: 'Dorm Essentials', image: '🫖', badge: 'MUST HAVE', desc: 'Fast boiling stainless steel interior, auto shut-off safety, ideal for dorm instant coffee & noodles.' },
+  { id: 16, name: 'A4 Notebook & Pen Bundle', price: 300, category: 'Dorm Essentials', image: '📝', desc: '3x Grid line notebooks (200 pages each) + pack of 5 smooth gel pens.' },
 ];
 
 const CATEGORIES = ['All', 'Phones & Audio', 'Tech & Wearables', 'Clothing & Apparel', 'Footwear & Style', 'Dorm Essentials'];
@@ -47,6 +47,10 @@ export default function Home() {
   const [toastMessage, setToastMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
 
+  // Detail Drawer State
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [detailQty, setDetailQty] = useState(1);
+
   const showToast = (message) => {
     setToastMessage(message);
     setTimeout(() => {
@@ -63,16 +67,21 @@ export default function Home() {
     }, 100);
   };
 
-  const addToCart = (product) => {
+  const addToCart = (product, qty = 1) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
-        return prev.map((item) => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+        return prev.map((item) => item.id === product.id ? { ...item, quantity: item.quantity + qty } : item);
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, { ...product, quantity: qty }];
     });
 
-    showToast(`✅ Added ${product.name} to cart!`);
+    showToast(`✅ Added ${qty}x ${product.name} to cart!`);
+  };
+
+  const openProductDrawer = (product) => {
+    setSelectedProduct(product);
+    setDetailQty(1);
   };
 
   const updateQuantity = (id, delta) => {
@@ -253,7 +262,10 @@ export default function Home() {
         ) : (
           filteredProducts.map((item) => (
             <div key={item.id} style={{ background: '#fff', padding: '14px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 2px rgba(0,0,0,0.04)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div 
+                onClick={() => openProductDrawer(item)} 
+                style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', flex: 1 }}
+              >
                 <div style={{ fontSize: '32px', background: '#f8fafc', padding: '10px', borderRadius: '10px' }}>{item.image}</div>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -267,13 +279,100 @@ export default function Home() {
                   <p style={{ color: '#2563eb', fontWeight: 'bold', margin: '4px 0 0', fontSize: '14px' }}>{item.price} ETB</p>
                 </div>
               </div>
-              <button onClick={() => addToCart(item)} style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
+              <button onClick={() => addToCart(item, 1)} style={{ background: '#2563eb', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
                 + Add
               </button>
             </div>
           ))
         )}
       </div>
+
+      {/* Item Detail Modal Drawer */}
+      {selectedProduct && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(15, 23, 42, 0.6)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-end',
+          zIndex: 2000
+        }}>
+          <div style={{
+            background: '#fff',
+            borderTopLeftRadius: '24px',
+            borderTopRightRadius: '24px',
+            padding: '24px 20px',
+            maxWidth: '600px',
+            width: '100%',
+            boxShadow: '0 -10px 25px rgba(0,0,0,0.15)',
+            maxHeight: '85vh',
+            overflowY: 'auto'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 'bold', background: '#eff6ff', color: '#2563eb', padding: '4px 10px', borderRadius: '12px' }}>
+                {selectedProduct.category}
+              </span>
+              <button onClick={() => setSelectedProduct(null)} style={{ background: '#f1f5f9', border: 'none', fontSize: '16px', borderRadius: '50%', width: '30px', height: '30px', cursor: 'pointer', color: '#64748b' }}>✕</button>
+            </div>
+
+            <div style={{ textAlign: 'center', padding: '16px 0', backgroundColor: '#f8fafc', borderRadius: '16px', marginBottom: '16px' }}>
+              <div style={{ fontSize: '64px', margin: '0' }}>{selectedProduct.image}</div>
+              <h2 style={{ margin: '8px 0 4px', fontSize: '18px', color: '#0f172a' }}>{selectedProduct.name}</h2>
+              <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#2563eb', margin: 0 }}>{selectedProduct.price} ETB</p>
+            </div>
+
+            <p style={{ fontSize: '13px', color: '#475569', lineHeight: '1.5', margin: '0 0 20px' }}>
+              {selectedProduct.desc}
+            </p>
+
+            {/* Quantity Selector inside Drawer */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#f1f5f9', padding: '10px 14px', borderRadius: '12px', marginBottom: '16px' }}>
+              <span style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Quantity:</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <button 
+                  onClick={() => setDetailQty(Math.max(1, detailQty - 1))}
+                  style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#fff', fontWeight: 'bold', cursor: 'pointer' }}
+                >
+                  -
+                </button>
+                <span style={{ fontSize: '14px', fontWeight: 'bold' }}>{detailQty}</span>
+                <button 
+                  onClick={() => setDetailQty(detailQty + 1)}
+                  style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#fff', fontWeight: 'bold', cursor: 'pointer' }}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                addToCart(selectedProduct, detailQty);
+                setSelectedProduct(null);
+              }}
+              style={{
+                width: '100%',
+                backgroundColor: '#2563eb',
+                color: '#fff',
+                border: 'none',
+                padding: '14px',
+                borderRadius: '12px',
+                fontWeight: 'bold',
+                fontSize: '15px',
+                cursor: 'pointer',
+                boxShadow: '0 4px 10px rgba(37, 99, 235, 0.25)'
+              }}
+            >
+              Add {detailQty}x to Cart • {selectedProduct.price * detailQty} ETB
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Cart & Checkout Form Section */}
       <div id="checkout-section" style={{ marginTop: '24px', padding: '16px', background: '#fff', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
