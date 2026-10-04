@@ -43,6 +43,7 @@ export default function Home() {
   const [studentInfo, setStudentInfo] = useState({ name: '', contact: '', campus: '' });
   const [paymentMethod, setPaymentMethod] = useState('telebirr');
   const [toastMessage, setToastMessage] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   const showToast = (message) => {
     setToastMessage(message);
@@ -96,7 +97,7 @@ export default function Home() {
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  const handleCheckout = () => {
+  const handleReviewOrder = () => {
     if (cart.length === 0) {
       alert('Your cart is empty!');
       return;
@@ -105,7 +106,10 @@ export default function Home() {
       alert('Please fill in your Name, Phone/Telegram, and Campus details.');
       return;
     }
+    setShowModal(true);
+  };
 
+  const handleFinalCheckout = () => {
     const selectedPayment = PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.name || 'Telebirr';
     const orderId = `AAU-${Math.floor(1000 + Math.random() * 9000)}`;
     const itemsList = cart.map((item) => `• ${item.name} (${item.quantity}x) - ${item.price * item.quantity} ETB`).join('\n');
@@ -267,13 +271,87 @@ export default function Home() {
                 </div>
               </div>
 
-              <button onClick={handleCheckout} style={{ background: '#16a34a', color: '#fff', padding: '12px', border: 'none', borderRadius: '8px', fontWeight: 'bold', fontSize: '15px', cursor: 'pointer', marginTop: '8px', boxShadow: '0 2px 4px rgba(22,163,74,0.2)' }}>
-                Order via Telegram ({PAYMENT_METHODS.find(p => p.id === paymentMethod)?.name})
+              <button onClick={handleReviewOrder} style={{ background: '#16a34a', color: '#fff', padding: '12px', border: 'none', borderRadius: '8px', fontWeight: 'bold', fontSize: '15px', cursor: 'pointer', marginTop: '8px', boxShadow: '0 2px 4px rgba(22,163,74,0.2)' }}>
+                Review & Order via Telegram
               </button>
             </div>
           </div>
         )}
       </div>
+
+      {/* Order Summary Confirmation Modal */}
+      {showModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(15, 23, 42, 0.6)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: '16px',
+          zIndex: 2000
+        }}>
+          <div style={{
+            background: '#fff',
+            borderRadius: '20px',
+            padding: '20px',
+            maxWidth: '480px',
+            width: '100%',
+            boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)',
+            maxHeight: '90vh',
+            overflowY: 'auto'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', paddingBottom: '12px', marginBottom: '14px' }}>
+              <h3 style={{ margin: 0, fontSize: '18px', color: '#0f172a' }}>📋 Order Confirmation</h3>
+              <button onClick={() => setShowModal(false)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: '#64748b' }}>✕</button>
+            </div>
+
+            {/* Customer Details */}
+            <div style={{ backgroundColor: '#f8fafc', padding: '12px', borderRadius: '10px', fontSize: '13px', marginBottom: '14px' }}>
+              <p style={{ margin: '0 0 6px', color: '#334155' }}><strong>👤 Name:</strong> {studentInfo.name}</p>
+              <p style={{ margin: '0 0 6px', color: '#334155' }}><strong>📞 Contact:</strong> {studentInfo.contact}</p>
+              <p style={{ margin: '0 0 6px', color: '#334155' }}><strong>📍 Location:</strong> {studentInfo.campus}</p>
+              <p style={{ margin: 0, color: '#334155' }}><strong>💳 Payment:</strong> {PAYMENT_METHODS.find(p => p.id === paymentMethod)?.name}</p>
+            </div>
+
+            {/* Items Summary */}
+            <div style={{ marginBottom: '14px' }}>
+              <p style={{ fontSize: '12px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', marginBottom: '8px' }}>Ordered Items</p>
+              {cart.map((item) => (
+                <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', margin: '6px 0', color: '#0f172a' }}>
+                  <span>{item.image} {item.name} × {item.quantity}</span>
+                  <span style={{ fontWeight: '600' }}>{item.price * item.quantity} ETB</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Total */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '2px dashed #cbd5e1', paddingTop: '12px', marginBottom: '16px' }}>
+              <span style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a' }}>Total Amount:</span>
+              <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#16a34a' }}>{cartTotal} ETB</span>
+            </div>
+
+            {/* Delivery Note */}
+            <div style={{ backgroundColor: '#eff6ff', padding: '10px', borderRadius: '8px', fontSize: '12px', color: '#1e40af', marginBottom: '16px', textAlign: 'center' }}>
+              🚀 <strong>Campus Express Delivery:</strong> Estimated within 1-2 hours after Telegram confirmation!
+            </div>
+
+            {/* Action Buttons */}
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={() => setShowModal(false)} style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#fff', color: '#475569', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer' }}>
+                Edit Order
+              </button>
+              <button onClick={handleFinalCheckout} style={{ flex: 2, padding: '12px', borderRadius: '8px', border: 'none', background: '#16a34a', color: '#fff', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer', boxShadow: '0 2px 4px rgba(22,163,74,0.2)' }}>
+                Confirm & Open Telegram ✈️
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
