@@ -42,6 +42,14 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [studentInfo, setStudentInfo] = useState({ name: '', contact: '', campus: '' });
   const [paymentMethod, setPaymentMethod] = useState('telebirr');
+  const [toastMessage, setToastMessage] = useState('');
+
+  const showToast = (message) => {
+    setToastMessage(message);
+    setTimeout(() => {
+      setToastMessage('');
+    }, 2200);
+  };
 
   const scrollToCheckout = () => {
     setTimeout(() => {
@@ -61,6 +69,7 @@ export default function Home() {
       return [...prev, { ...product, quantity: 1 }];
     });
 
+    showToast(`✅ Added ${product.name} to cart!`);
     scrollToCheckout();
   };
 
@@ -115,8 +124,30 @@ export default function Home() {
   };
 
   return (
-    <div style={{ padding: '16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#f1f5f9', minHeight: '100vh', maxWidth: '600px', margin: '0 auto' }}>
+    <div style={{ padding: '16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#f1f5f9', minHeight: '100vh', maxWidth: '600px', margin: '0 auto', position: 'relative' }}>
       
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          backgroundColor: '#0f172a',
+          color: '#fff',
+          padding: '12px 20px',
+          borderRadius: '30px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+          fontSize: '13px',
+          fontWeight: '600',
+          zIndex: 1000,
+          whiteSpace: 'nowrap',
+          transition: 'all 0.3s ease'
+        }}>
+          {toastMessage}
+        </div>
+      )}
+
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '16px', background: '#fff', padding: '16px', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
         <h1 style={{ color: '#0f172a', margin: '0 0 4px 0', fontSize: '22px' }}>AAU Campus Store</h1>
