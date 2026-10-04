@@ -71,7 +71,6 @@ export default function Home() {
     });
 
     showToast(`✅ Added ${product.name} to cart!`);
-    scrollToCheckout();
   };
 
   const updateQuantity = (id, delta) => {
@@ -128,7 +127,7 @@ export default function Home() {
   };
 
   return (
-    <div style={{ padding: '16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#f1f5f9', minHeight: '100vh', maxWidth: '600px', margin: '0 auto', position: 'relative' }}>
+    <div style={{ padding: '16px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#f1f5f9', minHeight: '100vh', maxWidth: '600px', margin: '0 auto', position: 'relative', paddingBottom: '80px' }}>
       
       {/* Toast Notification */}
       {toastMessage && (
@@ -279,6 +278,36 @@ export default function Home() {
         )}
       </div>
 
+      {/* Floating Quick Cart Button */}
+      {cartItemCount > 0 && (
+        <button
+          onClick={scrollToCheckout}
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            backgroundColor: '#2563eb',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '30px',
+            padding: '12px 20px',
+            fontWeight: 'bold',
+            fontSize: '14px',
+            boxShadow: '0 4px 14px rgba(37, 99, 235, 0.4)',
+            cursor: 'pointer',
+            zIndex: 999,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <span>🛒 View Cart ({cartItemCount})</span>
+          <span style={{ background: 'rgba(255,255,255,0.2)', padding: '2px 8px', borderRadius: '12px', fontSize: '12px' }}>
+            {cartTotal} ETB
+          </span>
+        </button>
+      )}
+
       {/* Order Summary Confirmation Modal */}
       {showModal && (
         <div style={{
@@ -346,7 +375,7 @@ export default function Home() {
                 Edit Order
               </button>
               <button onClick={handleFinalCheckout} style={{ flex: 2, padding: '12px', borderRadius: '8px', border: 'none', background: '#16a34a', color: '#fff', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer', boxShadow: '0 2px 4px rgba(22,163,74,0.2)' }}>
-                Confirm & Open Telegram ✈️
+                Confirm & Open Telegram ✈️️
               </button>
             </div>
           </div>
