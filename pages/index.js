@@ -1,96 +1,79 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
 
-// --- SAMPLE PRODUCTS CATALOG ---
 const PRODUCTS = [
-  { 
-    id: 1, 
-    name: 'Smart Phone 128GB', 
-    price: 28000, 
-    category: 'Phones & Audio', 
-    image: '/images/phone-front.jpg', // Replace with photo path (e.g., /images/phone.jpg) or image URL
+  {
+    id: 1,
+    name: 'Smart Phone 128GB',
+    price: 28000,
+    category: 'Phones & Audio',
+    image: '/images/phone-front.jpg', // Local image path in public/images/
     gallery: [
       { label: 'Front', icon: '/images/phone-front.jpg', desc: '6.7-inch OLED Super Retina HD Display' },
       { label: 'Camera', icon: '📸', desc: 'Triple Lens Matrix 48MP AI Camera System' },
       { label: 'Back', icon: '📲', desc: 'Matte glass back finish' }
     ],
-    badge: 'POPULAR', 
-    desc: '128GB storage, crisp HD display, long battery life.' 
+    badge: 'POPULAR',
+    desc: '128GB storage, crisp HD display, long battery life.'
   },
-  { 
-    id: 2, 
-    name: 'Wireless Headphones', 
-    price: 4500, 
-    category: 'Phones & Audio', 
-    image: '🎧', 
+  {
+    id: 2,
+    name: 'Wireless Earbuds Pro',
+    price: 3500,
+    category: 'Phones & Audio',
+    image: '🎧',
     gallery: [
-      { label: 'Overview', icon: '🎧', desc: 'Ergonomic over-ear cushions for maximum noise isolation' },
-      { label: 'Controls', icon: '🎛️', desc: 'Built-in tactile media controls & high-grade mic' },
-      { label: 'Case', icon: '💼', desc: 'Includes lightweight protective hardshell travel case' }
+      { label: 'Case', icon: '🎧', desc: 'Sleek matte wireless charging case' },
+      { label: 'Buds', icon: '🎵', desc: 'Ergonomic silicone tips for active noise isolation' }
     ],
-    badge: 'NEW', 
-    desc: 'Active noise cancellation with deep bass.' 
+    badge: 'BESTSELLER',
+    desc: 'Active noise cancellation with 24h total battery life.'
   },
-  { 
-    id: 3, 
-    name: 'Casual Canvas Sneakers', 
-    price: 3200, 
-    category: 'Apparel & Footwear', 
-    image: '👟', 
+  {
+    id: 3,
+    name: 'Oversized Streetwear Hoodie',
+    price: 2200,
+    category: 'Fashion & Apparel',
+    image: '🧥',
     gallery: [
-      { label: 'Side Profile', icon: '👟', desc: 'Durable double-stitched canvas top with modern silhouette' },
-      { label: 'Sole Grip', icon: '🦶', desc: 'High-traction vulcanized rubber outsole' },
-      { label: 'Laces & Detail', icon: '🏷️', desc: 'Reinforced brass eyelets with custom flat cotton laces' }
+      { label: 'Front', icon: '🧥', desc: 'Heavyweight premium cotton fleece build' },
+      { label: 'Detail', icon: '🧵', desc: 'Reinforced double-stitched hem and cuff design' }
     ],
-    badge: 'TRENDING', 
-    desc: 'Durable, stylish sneakers ideal for everyday wear.' 
+    badge: 'NEW',
+    desc: 'Premium fleece cotton, available in L and XL sizes.'
   },
-  { 
-    id: 4, 
-    name: 'Smartwatch Series V', 
-    price: 6800, 
-    category: 'Phones & Audio', 
-    image: '⌚', 
+  {
+    id: 4,
+    name: 'Minimalist Desk Lamp',
+    price: 1800,
+    category: 'Daily Essentials',
+    image: '💡',
     gallery: [
-      { label: 'Watch Face', icon: '⌚', desc: 'Always-on AMOLED touch display with high clarity' },
-      { label: 'Sensors', icon: '🩺', desc: 'Heart rate sensor, step tracking, and sleep quality monitor' },
-      { label: 'Strap', icon: '🧵', desc: 'Sweat-resistant breathable silicone strap' }
+      { label: 'Lamp', icon: '💡', desc: '3-stage touch dimmable warm LED bar' }
     ],
-    badge: 'HOT', 
-    desc: 'Track fitness, heart rate, notifications, and battery for up to 7 days.' 
-  },
-  { 
-    id: 5, 
-    name: 'Urban Tech Backpack', 
-    price: 2900, 
-    category: 'Apparel & Footwear', 
-    image: '🎒', 
-    gallery: [
-      { label: 'Full Bag', icon: '🎒', desc: 'Water-resistant nylon finish with shockproof padding' },
-      { label: 'Laptop Sleeve', icon: '💻', desc: 'Dedicated padded compartment fitting laptops up to 15.6 inches' },
-      { label: 'USB Port', icon: '🔌', desc: 'Integrated external USB pass-through charging port' }
-    ],
-    badge: 'BESTSELLER', 
-    desc: 'Water-resistant backpack featuring padded laptop protection and USB charging port.' 
+    badge: '',
+    desc: '3 brightness modes, USB rechargeable battery.'
   }
 ];
 
-const CATEGORIES = ['All', 'Phones & Audio', 'Apparel & Footwear', 'Daily Essentials'];
+const CATEGORIES = ['All', 'Phones & Audio', 'Fashion & Apparel', 'Daily Essentials'];
+
+const TAGS = ['All', 'POPULAR', 'BESTSELLER', 'NEW'];
 
 const PAYMENT_METHODS = [
-  { id: 'telebirr', name: 'Telebirr', icon: '📱' },
-  { id: 'cbe', name: 'CBE Birr / CBE', icon: '🏦' },
-  { id: 'cash', name: 'Cash on Delivery', icon: '💵' }
+  { id: 'telebirr', name: 'Telebirr', info: 'Fast 1-click payment' },
+  { id: 'cbe', name: 'CBE Birr / CBE Transfer', info: 'Direct bank transfer' },
+  { id: 'cash', name: 'Cash on Delivery', info: 'Pay upon handoff' }
 ];
 
-// --- HELPER COMPONENT TO RENDER EITHER IMAGE URL/PATH OR EMOJI TEXT ---
+// Helper component to render either an image file or an emoji string
 const ProductMedia = ({ src, alt = '', size = '32px' }) => {
-  if (src && (src.startsWith('/') || src.startsWith('http://') || src.startsWith('https://'))) {
+  if (src && (src.startsWith('/') || src.startsWith('http'))) {
     return (
-      <img 
-        src={src} 
-        alt={alt} 
-        style={{ width: size, height: size, objectFit: 'contain', borderRadius: '8px' }} 
+      <img
+        src={src}
+        alt={alt}
+        style={{ width: size, height: size, objectFit: 'contain', borderRadius: '8px' }}
       />
     );
   }
@@ -98,157 +81,100 @@ const ProductMedia = ({ src, alt = '', size = '32px' }) => {
 };
 
 export default function Home() {
-  const [cart, setCart] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTag, setSelectedTag] = useState('All');
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [activeAngleIndex, setActiveAngleIndex] = useState(0);
   const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isCheckoutStep, setIsCheckoutStep] = useState(false);
-
-  const [studentInfo, setStudentInfo] = useState({
-    name: '',
-    contact: '',
-    campus: 'Main Campus'
-  });
+  const [cart, setCart] = useState([]);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('telebirr');
+  const [customerInfo, setCustomerInfo] = useState({ name: '', contact: '', location: '' });
 
-  // Auto-scroll logic for angle switching inside detail modal
-  useEffect(() => {
-    let timer;
-    if (selectedProduct && selectedProduct.gallery && selectedProduct.gallery.length > 0) {
-      timer = setInterval(() => {
-        setActiveAngleIndex((prevIndex) => (prevIndex + 1) % selectedProduct.gallery.length);
-      }, 3500);
-    }
-    return () => clearInterval(timer);
-  }, [selectedProduct]);
+  const filteredProducts = PRODUCTS.filter((product) => {
+    const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
+    const matchesTag = selectedTag === 'All' || product.badge === selectedTag;
+    return matchesCategory && matchesTag;
+  });
 
-  // Open product modal
-  const handleOpenProduct = (product) => {
-    setSelectedProduct(product);
-    setActiveAngleIndex(0);
-  };
-
-  // Close product modal
-  const handleCloseProduct = () => {
-    setSelectedProduct(null);
-    setActiveAngleIndex(0);
-  };
-
-  // Cart Management
-  const addToCart = (product, e) => {
-    if (e) e.stopPropagation();
-    setCart((prevCart) => {
-      const existing = prevCart.find((item) => item.id === product.id);
+  const addToCart = (product) => {
+    setCart((prev) => {
+      const existing = prev.find((item) => item.id === product.id);
       if (existing) {
-        return prevCart.map((item) =>
+        return prev.map((item) =>
           item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
-      return [...prevCart, { ...product, quantity: 1 }];
+      return [...prev, { ...product, quantity: 1 }];
     });
   };
 
-  const updateQuantity = (id, delta) => {
-    setCart((prevCart) =>
-      prevCart
-        .map((item) => {
-          if (item.id === id) {
-            const newQty = item.quantity + delta;
-            return newQty > 0 ? { ...item, quantity: newQty } : null;
-          }
-          return item;
-        })
-        .filter(Boolean)
-    );
+  const removeFromCart = (id) => {
+    setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Direct Telegram Checkout Integration
-  const handleFinalCheckout = (e) => {
-    e.preventDefault();
-    if (!studentInfo.name || !studentInfo.contact) {
-      alert('Please fill out your name and contact info.');
+  const handleFinalCheckout = () => {
+    if (!customerInfo.name || !customerInfo.contact || !customerInfo.location) {
+      alert('Please fill in your name, contact number, and location before ordering.');
       return;
     }
 
-    const selectedPayment = PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.name || 'Telebirr';
+    const selectedPaymentObj = PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.name || 'Telebirr';
     const orderId = `YESHI-${Math.floor(1000 + Math.random() * 9000)}`;
-    const itemsList = cart
-      .map((item) => `• ${item.name} (${item.quantity}x) - ${item.price * item.quantity} ETB`)
-      .join('\n');
+    const itemsList = cart.map((item) => `• ${item.name} (${item.quantity}x) - ${item.price * item.quantity} ETB`).join('\n');
 
     const messageText = `🛍️ NEW YESHI MARKET ORDER (${orderId})\n\n` +
-      `👤 Name: ${studentInfo.name}\n` +
-      `📞 Contact: ${studentInfo.contact}\n` +
-      `📍 Location/Campus: ${studentInfo.campus}\n` +
-      `💳 Payment Method: ${selectedPayment}\n\n` +
+      `👤 Name: ${customerInfo.name}\n` +
+      `📞 Contact: ${customerInfo.contact}\n` +
+      `📍 Location: ${customerInfo.location}\n` +
+      `💳 Payment Method: ${selectedPaymentObj}\n\n` +
       `📦 Items:\n${itemsList}\n\n` +
-      `💰 Total Amount: ${cartTotal} ETB`;
+      `💰 Total: ${cartTotal} ETB`;
 
     const telegramUrl = `https://t.me/bekivisuals1221?text=${encodeURIComponent(messageText)}`;
     window.location.href = telegramUrl;
   };
 
-  // Filter Catalog
-  const filteredProducts = PRODUCTS.filter((item) => {
-    const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
-
-  const activeAngle = selectedProduct?.gallery?.[activeAngleIndex] || null;
+  const currentAngle = selectedProduct?.gallery?.[activeAngleIndex] || {
+    icon: selectedProduct?.image,
+    desc: selectedProduct?.desc
+  };
 
   return (
-    <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', backgroundColor: '#f8fafc', minHeight: '100vh', padding: '16px', color: '#1e293b' }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif', backgroundColor: '#f8fafc', minHeight: '100vh', padding: '16px' }}>
       <Head>
-        <title>Yeshi Market - Online Store</title>
-        <meta name="description" content="Yeshi Market - Online E-Commerce Store" />
+        <title>Yeshi Market - Online Shopping</title>
+        <meta name="description" content="Yeshi Market Online Store" />
       </Head>
 
-      <div style={{ maxWidth: '600px', margin: '0 auto', paddingBottom: '80px' }}>
-        
-        {/* --- BRAND HEADER --- */}
+      <div style={{ maxWidth: '480px', margin: '0 auto' }}>
+        {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '16px', background: '#fff', padding: '16px', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-          <h1 style={{ color: '#0f172a', margin: '0 0 4px 0', fontSize: '24px', fontWeight: '800' }}>Yeshi Market</h1>
+          <h1 style={{ color: '#0f172a', margin: '0 0 4px 0', fontSize: '22px' }}>Yeshi Market</h1>
           <p style={{ color: '#64748b', margin: '0 0 12px 0', fontSize: '13px' }}>Tech • Fashion • Apparel • Daily Essentials</p>
           <a href="https://t.me/bekivisuals1221" target="_blank" rel="noreferrer" style={{ backgroundColor: '#0088cc', color: '#fff', padding: '8px 16px', borderRadius: '20px', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', display: 'inline-block' }}>
             💬 Support: @bekivisuals1221
           </a>
         </div>
 
-        {/* --- SEARCH BAR --- */}
-        <div style={{ marginBottom: '16px' }}>
-          <input
-            type="text"
-            placeholder="Search products in Yeshi Market..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ width: '100%', padding: '12px 16px', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '14px', outline: 'none', boxSizing: 'border-box' }}
-          />
-        </div>
-
-        {/* --- CATEGORY FILTERS --- */}
-        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px', marginBottom: '16px' }}>
+        {/* Category Filter */}
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px', marginBottom: '8px' }}>
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
               style={{
-                padding: '8px 16px',
+                padding: '6px 14px',
                 borderRadius: '20px',
                 border: 'none',
-                backgroundColor: selectedCategory === cat ? '#0f172a' : '#fff',
-                color: selectedCategory === cat ? '#fff' : '#64748b',
-                fontSize: '13px',
-                fontWeight: '600',
-                cursor: 'pointer',
+                backgroundColor: selectedCategory === cat ? '#0f172a' : '#e2e8f0',
+                color: selectedCategory === cat ? '#fff' : '#475569',
+                fontSize: '12px',
+                fontWeight: 'bold',
                 whiteSpace: 'nowrap',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                cursor: 'pointer'
               }}
             >
               {cat}
@@ -256,148 +182,244 @@ export default function Home() {
           ))}
         </div>
 
-        {/* --- PRODUCT GRID --- */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+        {/* Tag Filter */}
+        <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '12px', marginBottom: '12px' }}>
+          {TAGS.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => setSelectedTag(tag)}
+              style={{
+                padding: '4px 10px',
+                borderRadius: '12px',
+                border: '1px solid',
+                borderColor: selectedTag === tag ? '#2563eb' : '#cbd5e1',
+                backgroundColor: selectedTag === tag ? '#eff6ff' : '#fff',
+                color: selectedTag === tag ? '#2563eb' : '#64748b',
+                fontSize: '11px',
+                cursor: 'pointer'
+              }}
+            >
+              {tag === 'All' ? '🏷️ All Tags' : `# ${tag}`}
+            </button>
+          ))}
+        </div>
+
+        {/* Product Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '80px' }}>
           {filteredProducts.map((item) => (
             <div
               key={item.id}
-              onClick={() => handleOpenProduct(item)}
-              style={{ backgroundColor: '#fff', padding: '12px', borderRadius: '16px', position: 'relative', cursor: 'pointer', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+              style={{ backgroundColor: '#fff', borderRadius: '12px', padding: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
             >
-              <span style={{ position: 'absolute', top: '8px', left: '8px', backgroundColor: '#e0f2fe', color: '#0369a1', fontSize: '10px', fontWeight: 'bold', padding: '2px 8px', borderRadius: '10px' }}>
-                {item.badge}
-              </span>
-              
-              <div style={{ textAlign: 'center', margin: '24px 0 12px 0' }}>
-                <ProductMedia src={item.image} alt={item.name} size="48px" />
+              <div>
+                {item.badge && (
+                  <span style={{ fontSize: '9px', fontWeight: 'bold', background: '#dbeafe', color: '#1e40af', padding: '2px 6px', borderRadius: '4px' }}>
+                    {item.badge}
+                  </span>
+                )}
+                <div style={{ margin: '12px 0', textAlign: 'center' }}>
+                  <ProductMedia src={item.image} alt={item.name} size="48px" />
+                </div>
+                <h3 style={{ fontSize: '14px', margin: '0 0 4px 0', color: '#0f172a' }}>{item.name}</h3>
+                <p style={{ fontSize: '11px', color: '#64748b', margin: '0 0 8px 0' }}>{item.desc}</p>
+                <p style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 8px 0' }}>{item.price} ETB</p>
               </div>
 
-              <div>
-                <h3 style={{ fontSize: '14px', margin: '0 0 4px 0', color: '#0f172a' }}>{item.name}</h3>
-                <p style={{ fontSize: '14px', fontWeight: 'bold', color: '#2563eb', margin: '0 0 8px 0' }}>{item.price} ETB</p>
+              <div style={{ display: 'flex', gap: '6px' }}>
                 <button
-                  onClick={(e) => addToCart(item, e)}
-                  style={{ width: '100%', padding: '8px', backgroundColor: '#f1f5f9', color: '#0f172a', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}
+                  onClick={() => { setSelectedProduct(item); setActiveAngleIndex(0); }}
+                  style={{ flex: 1, padding: '6px', background: '#f1f5f9', border: 'none', borderRadius: '6px', fontSize: '11px', cursor: 'pointer', fontWeight: 'bold', color: '#334155' }}
                 >
-                  + Add to Cart
+                  View
+                </button>
+                <button
+                  onClick={() => addToCart(item)}
+                  style={{ flex: 1, padding: '6px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '11px', cursor: 'pointer', fontWeight: 'bold' }}
+                >
+                  + Add
                 </button>
               </div>
             </div>
           ))}
         </div>
-      </div>
 
-      {/* --- CART BAR (BOTTOM) --- */}
-      {cartItemCount > 0 && (
-        <div style={{ position: 'fixed', bottom: '16px', left: '50%', transform: 'translateX(-50%)', width: 'calc(100% - 32px)', maxWidth: '568px', backgroundColor: '#0f172a', color: '#fff', padding: '12px 20px', borderRadius: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 10px 25px rgba(0,0,0,0.2)', cursor: 'pointer', zIndex: 100 }} onClick={() => setIsCartOpen(true)}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ backgroundColor: '#2563eb', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 'bold' }}>
-              {cartItemCount}
-            </span>
-            <span style={{ fontWeight: 'bold', fontSize: '14px' }}>View Cart</span>
-          </div>
-          <span style={{ fontWeight: 'bold', fontSize: '14px', color: '#60a5fa' }}>{cartTotal} ETB →</span>
-        </div>
-      )}
-
-      {/* --- PRODUCT DETAILS & ANGLES MODAL --- */}
-      {selectedProduct && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', zIndex: 200 }} onClick={handleCloseProduct}>
-          <div style={{ backgroundColor: '#fff', width: '100%', maxWidth: '600px', borderTopLeftRadius: '24px', borderTopRightRadius: '24px', padding: '24px', maxHeight: '90vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <span style={{ backgroundColor: '#f1f5f9', color: '#475569', fontSize: '12px', fontWeight: 'bold', padding: '4px 12px', borderRadius: '12px' }}>{selectedProduct.category}</span>
-              <button onClick={handleCloseProduct} style={{ border: 'none', background: 'none', fontSize: '20px', cursor: 'pointer', color: '#64748b' }}>✕</button>
+        {/* Floating Cart Button Bar */}
+        {cart.length > 0 && (
+          <div style={{ position: 'fixed', bottom: '16px', left: '50%', transform: 'translateX(-50%)', width: 'calc(100% - 32px)', maxWidth: '448px', backgroundColor: '#0f172a', color: '#fff', borderRadius: '16px', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.3)' }}>
+            <div>
+              <p style={{ margin: 0, fontSize: '12px', color: '#94a3b8' }}>{cart.reduce((a, c) => a + c.quantity, 0)} Items</p>
+              <p style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>{cartTotal} ETB</p>
             </div>
-
-            {/* Display active angle image with Micro-Detail Zoom Button */}
-            <div style={{ textAlign: 'center', backgroundColor: '#f8fafc', padding: '24px', borderRadius: '16px', position: 'relative', marginBottom: '16px' }}>
-              <ProductMedia src={activeAngle?.icon || selectedProduct.image} alt={selectedProduct.name} size="96px" />
-              <p style={{ marginTop: '8px', fontSize: '13px', fontWeight: 'bold', color: '#0f172a' }}>{activeAngle?.desc || selectedProduct.desc}</p>
-              
-              <button 
-                onClick={() => setIsZoomModalOpen(true)}
-                style={{ position: 'absolute', bottom: '8px', right: '8px', border: 'none', backgroundColor: '#fff', padding: '6px 12px', borderRadius: '12px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.08)' }}
-              >
-                🔍 Zoom Micro-Details
-              </button>
-            </div>
-
-            {/* Gallery Angle Switcher */}
-            {selectedProduct.gallery && (
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', overflowX: 'auto', paddingBottom: '4px' }}>
-                {selectedProduct.gallery.map((angle, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveAngleIndex(idx)}
-                    style={{
-                      flex: 1,
-                      padding: '8px',
-                      borderRadius: '12px',
-                      border: activeAngleIndex === idx ? '2px solid #2563eb' : '1px solid #e2e8f0',
-                      backgroundColor: activeAngleIndex === idx ? '#eff6ff' : '#fff',
-                      cursor: 'pointer',
-                      textAlign: 'center'
-                    }}
-                  >
-                    <div style={{ marginBottom: '2px' }}>
-                      <ProductMedia src={angle.icon} alt={angle.label} size="24px" />
-                    </div>
-                    <div style={{ fontSize: '10px', fontWeight: 'bold', color: activeAngleIndex === idx ? '#2563eb' : '#64748b' }}>{angle.label}</div>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            <h2 style={{ fontSize: '20px', margin: '0 0 8px 0', color: '#0f172a' }}>{selectedProduct.name}</h2>
-            <p style={{ fontSize: '13px', color: '#64748b', margin: '0 0 16px 0', lineHeight: '1.5' }}>{selectedProduct.desc}</p>
-            
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
-              <span style={{ fontSize: '22px', fontWeight: '800', color: '#2563eb' }}>{selectedProduct.price} ETB</span>
-              <button
-                onClick={() => {
-                  addToCart(selectedProduct);
-                  handleCloseProduct();
-                }}
-                style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* --- MICRO-DETAIL ZOOM MODAL --- */}
-      {isZoomModalOpen && selectedProduct && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 300, padding: '20px' }} onClick={() => setIsZoomModalOpen(false)}>
-          <div style={{ backgroundColor: '#fff', padding: '32px', borderRadius: '24px', textAlign: 'center', maxWidth: '400px', width: '100%' }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ transform: 'scale(1.8)', margin: '40px 0' }}>
-              <ProductMedia src={activeAngle?.icon || selectedProduct.image} alt={selectedProduct.name} size="120px" />
-            </div>
-            <h3 style={{ fontSize: '16px', margin: '0 0 4px 0' }}>{activeAngle?.label || 'Micro View'}</h3>
-            <p style={{ fontSize: '13px', color: '#64748b', margin: '0 0 20px 0' }}>{activeAngle?.desc || selectedProduct.desc}</p>
             <button
-              onClick={() => setIsZoomModalOpen(false)}
-              style={{ backgroundColor: '#0f172a', color: '#fff', border: 'none', padding: '10px 24px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}
+              onClick={() => setIsCheckoutOpen(true)}
+              style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}
             >
-              Close Zoom View
+              Checkout 🛒
             </button>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* --- CART & TELEGRAM CHECKOUT MODAL --- */}
-      {isCartOpen && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', zIndex: 200 }} onClick={() => setIsCartOpen(false)}>
-          <div style={{ backgroundColor: '#fff', width: '100%', maxWidth: '600px', borderTopLeftRadius: '24px', borderTopRightRadius: '24px', padding: '24px', maxHeight: '90vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h2 style={{ fontSize: '18px', margin: 0 }}>🛍️ Your Yeshi Market Cart</h2>
-              <button onClick={() => setIsCartOpen(false)} style={{ border: 'none', background: 'none', fontSize: '20px', cursor: 'pointer', color: '#64748b' }}>✕</button>
+        {/* Product Angle / Detail Modal */}
+        {selectedProduct && (
+          <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', zIndex: 100 }}>
+            <div style={{ backgroundColor: '#fff', borderRadius: '16px', padding: '20px', width: '100%', maxWidth: '400px', maxHeight: '90vh', overflowY: 'auto' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <h2 style={{ fontSize: '16px', margin: 0 }}>{selectedProduct.name}</h2>
+                <button onClick={() => setSelectedProduct(null)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer' }}>✕</button>
+              </div>
+
+              <div style={{ textAlign: 'center', background: '#f8fafc', padding: '24px', borderRadius: '12px', marginBottom: '12px', cursor: 'pointer' }} onClick={() => setIsZoomModalOpen(true)}>
+                <ProductMedia src={currentAngle?.icon} alt={selectedProduct.name} size="96px" />
+                <p style={{ fontSize: '11px', color: '#64748b', marginTop: '8px' }}>🔍 Tap image to zoom preview</p>
+              </div>
+
+              <p style={{ fontSize: '13px', color: '#334155', marginBottom: '12px', textAlign: 'center' }}>
+                {currentAngle?.desc || selectedProduct.desc}
+              </p>
+
+              {/* Angle Gallery Selector */}
+              {selectedProduct.gallery && selectedProduct.gallery.length > 0 && (
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '16px' }}>
+                  {selectedProduct.gallery.map((angle, idx) => (
+                    <button
+                      key={angle.label}
+                      onClick={() => setActiveAngleIndex(idx)}
+                      style={{
+                        padding: '6px 12px',
+                        borderRadius: '8px',
+                        border: activeAngleIndex === idx ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                        background: activeAngleIndex === idx ? '#eff6ff' : '#fff',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      <ProductMedia src={angle.icon} alt={angle.label} size="16px" />
+                      <span style={{ fontSize: '11px', fontWeight: 'bold' }}>{angle.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <button
+                onClick={() => { addToCart(selectedProduct); setSelectedProduct(null); }}
+                style={{ width: '100%', padding: '12px', backgroundColor: '#2563eb', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}
+              >
+                Add to Order ({selectedProduct.price} ETB)
+              </button>
             </div>
+          </div>
+        )}
 
-            {!isCheckoutStep ? (
-              <>
-                {cart.length === 0 ? (
-                  <p style={{ textAlign: 'center', color: '#64748b', margin: '32px 0' }}>Your cart is empty.</p>
-                ) : (
-                  <div>
+        {/* Zoom Modal */}
+        {isZoomModalOpen && selectedProduct && (
+          <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', zIndex: 110 }}>
+            <div style={{ textAlign: 'center', color: '#fff' }}>
+              <div style={{ margin: '20px 0' }}>
+                <ProductMedia src={currentAngle?.icon} alt={selectedProduct.name} size="180px" />
+              </div>
+              <p style={{ fontSize: '14px', marginBottom: '20px' }}>{currentAngle?.desc}</p>
+              <button
+                onClick={() => setIsZoomModalOpen(false)}
+                style={{ padding: '8px 24px', backgroundColor: '#fff', color: '#0f172a', border: 'none', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}
+              >
+                Close Zoom
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Checkout Modal */}
+        {isCheckoutOpen && (
+          <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', zIndex: 100 }}>
+            <div style={{ backgroundColor: '#fff', borderRadius: '16px', padding: '20px', width: '100%', maxWidth: '400px', maxHeight: '90vh', overflowY: 'auto' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <h2 style={{ fontSize: '16px', margin: 0 }}>Checkout Order</h2>
+                <button onClick={() => setIsCheckoutOpen(false)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer' }}>✕</button>
+              </div>
+
+              {/* Items List */}
+              <div style={{ marginBottom: '16px' }}>
+                {cart.map((item) => (
+                  <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
+                    <div>
+                      <p style={{ margin: 0, fontSize: '13px', fontWeight: 'bold' }}>{item.name}</p>
+                      <p style={{ margin: 0, fontSize: '11px', color: '#64748b' }}>{item.quantity} x {item.price} ETB</p>
+                    </div>
+                    <button onClick={() => removeFromCart(item.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '12px' }}>Remove</button>
+                  </div>
+                ))}
+                <p style={{ textAlign: 'right', fontWeight: 'bold', fontSize: '15px', marginTop: '12px' }}>Total: {cartTotal} ETB</p>
+              </div>
+
+              {/* Contact Information */}
+              <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <input
+                  type="text"
+                  placeholder="Your Full Name"
+                  value={customerInfo.name}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
+                  style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+                />
+                <input
+                  type="text"
+                  placeholder="Phone Number / Telegram Handle"
+                  value={customerInfo.contact}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, contact: e.target.value })}
+                  style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+                />
+                <input
+                  type="text"
+                  placeholder="Delivery Location / Address"
+                  value={customerInfo.location}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, location: e.target.value })}
+                  style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '13px', boxSizing: 'border-box' }}
+                />
+              </div>
+
+              {/* Payment Method Selector */}
+              <div style={{ marginBottom: '20px' }}>
+                <p style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '8px', color: '#475569' }}>Payment Method:</p>
+                {PAYMENT_METHODS.map((method) => (
+                  <label
+                    key={method.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px',
+                      borderRadius: '8px',
+                      border: paymentMethod === method.id ? '1px solid #2563eb' : '1px solid #e2e8f0',
+                      marginBottom: '6px',
+                      cursor: 'pointer',
+                      fontSize: '12px'
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      name="payment"
+                      checked={paymentMethod === method.id}
+                      onChange={() => setPaymentMethod(method.id)}
+                    />
+                    <div>
+                      <span style={{ fontWeight: 'bold' }}>{method.name}</span>
+                      <span style={{ color: '#64748b', marginLeft: '6px' }}>({method.info})</span>
+                    </div>
+                  </label>
+                ))}
+              </div>
+
+              <button
+                onClick={handleFinalCheckout}
+                style={{ width: '100%', padding: '12px', backgroundColor: '#0088cc', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}
+              >
+                Send Order via Telegram 📲
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
