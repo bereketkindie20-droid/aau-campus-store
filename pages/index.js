@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-// Helper component to safely render images or fallback to emoji icons
 const ProductMedia = ({ src, alt = "", size = "32px" }) => {
   const [hasError, setHasError] = useState(false);
 
@@ -17,7 +16,6 @@ const ProductMedia = ({ src, alt = "", size = "32px" }) => {
   return <span style={{ fontSize: size }}>{src && !src.startsWith("/") && !src.startsWith("http") ? src : "📦"}</span>;
 };
 
-// Streamlined 7-Category Structure
 const CATEGORIES = [
   "All", 
   "Food & Snacks", 
@@ -39,11 +37,11 @@ const PRODUCTS = [
     category: "Food & Snacks", 
     image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500", 
     gallery: [
-      { label: "Full Plate", icon: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500", desc: "Freshly prepared traditional platter" },
-      { label: "Side View", icon: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500", desc: "Served hot with organic ingredients" }
+      { label: "Full Plate", icon: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500", desc: "Fresh traditional platter" },
+      { label: "Side View", icon: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500", desc: "Served hot with fresh ingredients" }
     ],
     badge: "FRESH", 
-    desc: "Delicious fresh meal combo, prepared and delivered hot to your location." 
+    desc: "Delicious fresh meal combo, prepared and delivered hot." 
   },
   { 
     id: 2, 
@@ -66,7 +64,7 @@ const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500", 
     gallery: [
       { label: "Front Fit", icon: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500", desc: "Heavyweight fleece cotton blend" },
-      { label: "Back View", icon: "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?w=500", desc: "Relaxed streetwear aesthetic cut" }
+      { label: "Back View", icon: "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?w=500", desc: "Relaxed streetwear cut" }
     ],
     badge: "TRENDING", 
     desc: "Super soft inner fleece lining, ideal for cool weather." 
@@ -79,9 +77,9 @@ const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500", 
     gallery: [
       { label: "Full Style", icon: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500", desc: "Lightweight breathable fabric" },
-      { label: "Close-up", icon: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=500", desc: "Elegant floral pattern design" }
+      { label: "Close-up", icon: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=500", desc: "Elegant floral pattern" }
     ],
-    desc: "Comfortable and stylish daily wear dress for any occasion." 
+    desc: "Comfortable and stylish daily wear dress." 
   },
   { 
     id: 5, 
@@ -91,10 +89,10 @@ const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500", 
     gallery: [
       { label: "Side Profile", icon: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500", desc: "Durable anti-slip rubber sole" },
-      { label: "Top View", icon: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500", desc: "Cushioned soft breathable insole" }
+      { label: "Top View", icon: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500", desc: "Cushioned soft insole" }
     ],
     badge: "POPULAR", 
-    desc: "Lightweight sneakers built for walking comfortably all day long." 
+    desc: "Lightweight sneakers built for daily walking." 
   },
   { 
     id: 6, 
@@ -103,10 +101,10 @@ const PRODUCTS = [
     category: "Bags & Accessories", 
     image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500", 
     gallery: [
-      { label: "Front View", icon: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500", desc: "Spacious compartment fits up to 15-inch laptop" },
-      { label: "Straps Detail", icon: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500", desc: "Reinforced shoulder straps for heavy loads" }
+      { label: "Front View", icon: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500", desc: "Fits up to 15-inch laptop" },
+      { label: "Straps Detail", icon: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500", desc: "Reinforced shoulder straps" }
     ],
-    desc: "Heavy canvas material with secure zipper compartments for books and tech gear." 
+    desc: "Heavy canvas material with zipper compartments for books and tech." 
   },
   { 
     id: 7, 
@@ -116,7 +114,7 @@ const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500", 
     gallery: [
       { label: "Bottle Front", icon: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500", desc: "Long-lasting citrus and woody notes" },
-      { label: "Atomizer Spray", icon: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500", desc: "Fine-mist diffusion spray bottle" }
+      { label: "Atomizer Spray", icon: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500", desc: "Fine-mist diffusion spray" }
     ],
     badge: "BESTSELLER", 
     desc: "Fresh long-lasting fragrance crafted for everyday confidence." 
@@ -126,7 +124,7 @@ const PRODUCTS = [
 const PAYMENT_METHODS = [
   { id: "telebirr", name: "Telebirr", icon: "📱" },
   { id: "cbe", name: "CBE Birr", icon: "🏦" },
-  { id: "cash", name: "Cash on Delivery", icon: "💵" },
+  { id: "cash", name: "Cash on Delivery", icon: "💵" }
 ];
 
 export default function Home() {
@@ -137,29 +135,21 @@ export default function Home() {
   const [paymentMethod, setPaymentMethod] = useState("telebirr");
   const [toastMessage, setToastMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
-
-  // Detail Drawer State
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [activeAngleIndex, setActiveAngleIndex] = useState(0);
   const [detailQty, setDetailQty] = useState(1);
-
-  // Micro Details Zoom Modal
   const [isZoomOpen, setIsZoomOpen] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
 
-  const showToast = (message) => {
-    setToastMessage(message);
-    setTimeout(() => {
-      setToastMessage("");
-    }, 2200);
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(""), 2200);
   };
 
   const scrollToCheckout = () => {
     setTimeout(() => {
-      const checkoutElement = document.getElementById("checkout-section");
-      if (checkoutElement) {
-        checkoutElement.scrollIntoView({ behavior: "smooth" });
-      }
+      const el = document.getElementById("checkout-section");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
     }, 150);
   };
 
@@ -171,7 +161,6 @@ export default function Home() {
       }
       return [...prev, { ...product, quantity: qty }];
     });
-
     showToast(`✅ Added ${qty}x ${product.name} to cart!`);
     scrollToCheckout();
   };
@@ -199,11 +188,7 @@ export default function Home() {
 
   const handleTagClick = (tag) => {
     const cleanTag = tag.replace("#", "");
-    if (searchQuery.toLowerCase() === cleanTag.toLowerCase()) {
-      setSearchQuery("");
-    } else {
-      setSearchQuery(cleanTag);
-    }
+    setSearchQuery(searchQuery.toLowerCase() === cleanTag.toLowerCase() ? "" : cleanTag);
   };
 
   const filteredProducts = PRODUCTS.filter((item) => {
@@ -216,13 +201,9 @@ export default function Home() {
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleReviewOrder = () => {
-    if (cart.length === 0) {
-      alert("Your cart is empty!");
-      return;
-    }
+    if (cart.length === 0) return alert("Your cart is empty!");
     if (!studentInfo.name || !studentInfo.contact || !studentInfo.campus) {
-      alert("Please fill in your Name, Phone/Telegram, and Delivery Location details.");
-      return;
+      return alert("Please fill in your Name, Contact, and Location.");
     }
     setShowModal(true);
   };
@@ -240,34 +221,16 @@ export default function Home() {
       `📦 Items:\n${itemsList}\n\n` +
       `💰 Total: ${cartTotal} ETB`;
 
-    const telegramUrl = `https://t.me/bekivisuals1221?text=${encodeURIComponent(messageText)}`;
-    
-    window.location.href = telegramUrl;
+    window.location.href = `https://t.me/bekivisuals1221?text=${encodeURIComponent(messageText)}`;
   };
 
   const activeAngle = selectedProduct?.gallery ? selectedProduct.gallery[activeAngleIndex] : null;
 
   return (
-    <div style={{ padding: "16px", fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: "#f1f5f9", minHeight: "100vh", maxWidth: "600px", margin: "0 auto", position: "relative", paddingBottom: "40px" }}>
+    <div style={{ padding: "16px", fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: "#f1f5f9", minHeight: "100vh", maxWidth: "600px", margin: "0 auto", paddingBottom: "40px" }}>
       
-      {/* Toast Notification */}
       {toastMessage && (
-        <div style={{
-          position: "fixed",
-          top: "20px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          backgroundColor: "#0f172a",
-          color: "#fff",
-          padding: "12px 20px",
-          borderRadius: "30px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-          fontSize: "13px",
-          fontWeight: "600",
-          zIndex: 1000,
-          whiteSpace: "nowrap",
-          transition: "all 0.3s ease"
-        }}>
+        <div style={{ position: "fixed", top: "20px", left: "50%", transform: "translateX(-50%)", backgroundColor: "#0f172a", color: "#fff", padding: "12px 20px", borderRadius: "30px", fontSize: "13px", fontWeight: "600", zIndex: 1000 }}>
           {toastMessage}
         </div>
       )}
@@ -281,7 +244,7 @@ export default function Home() {
         </a>
       </div>
 
-      {/* Search Input with Quick Clear Button */}
+      {/* Search Bar */}
       <div style={{ marginBottom: "8px", position: "relative" }}>
         <input 
           type="text" 
@@ -291,401 +254,117 @@ export default function Home() {
           style={{ width: "100%", padding: "12px 36px 12px 12px", borderRadius: "12px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", backgroundColor: "#fff", boxSizing: "border-box" }} 
         />
         {searchQuery && (
-          <button
-            onClick={() => setSearchQuery("")}
-            style={{
-              position: "absolute",
-              right: "12px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              border: "none",
-              background: "#e2e8f0",
-              color: "#475569",
-              borderRadius: "50%",
-              width: "20px",
-              height: "20px",
-              fontSize: "12px",
-              fontWeight: "bold",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            ✕
-          </button>
+          <button onClick={() => setSearchQuery("")} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", border: "none", background: "#e2e8f0", color: "#475569", borderRadius: "50%", width: "20px", height: "20px", cursor: "pointer" }}>✕</button>
         )}
       </div>
 
-      {/* Hashtag Badges */}
-      <div style={{ display: "flex", gap: "6px", overflowX: "auto", paddingBottom: "10px", marginBottom: "12px", WebkitOverflowScrolling: "touch" }}>
-        {POPULAR_TAGS.map((tag) => {
-          const isActive = searchQuery.toLowerCase() === tag.replace("#", "").toLowerCase();
-          return (
-            <button
-              key={tag}
-              onClick={() => handleTagClick(tag)}
-              style={{
-                padding: "4px 10px",
-                borderRadius: "12px",
-                border: "none",
-                backgroundColor: isActive ? "#dbeafe" : "#e2e8f0",
-                color: isActive ? "#1d4ed8" : "#64748b",
-                fontSize: "11px",
-                fontWeight: "600",
-                whiteSpace: "nowrap",
-                cursor: "pointer"
-              }}
-            >
-              {tag}
-            </button>
-          );
-        })}
+      {/* Tags */}
+      <div style={{ display: "flex", gap: "6px", overflowX: "auto", paddingBottom: "10px", marginBottom: "12px" }}>
+        {POPULAR_TAGS.map((tag) => (
+          <button key={tag} onClick={() => handleTagClick(tag)} style={{ padding: "4px 10px", borderRadius: "12px", border: "none", backgroundColor: searchQuery.toLowerCase() === tag.replace("#","").toLowerCase() ? "#dbeafe" : "#e2e8f0", color: searchQuery.toLowerCase() === tag.replace("#","").toLowerCase() ? "#1d4ed8" : "#64748b", fontSize: "11px", fontWeight: "600", cursor: "pointer" }}>
+            {tag}
+          </button>
+        ))}
       </div>
 
       {/* Categories */}
-      <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px", marginBottom: "16px", WebkitOverflowScrolling: "touch" }}>
+      <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px", marginBottom: "16px" }}>
         {CATEGORIES.map((cat) => (
-          <button key={cat} onClick={() => setActiveCategory(cat)} style={{ padding: "8px 16px", borderRadius: "20px", border: "none", backgroundColor: activeCategory === cat ? "#2563eb" : "#fff", color: activeCategory === cat ? "#fff" : "#475569", fontWeight: "600", fontSize: "13px", whiteSpace: "nowrap", cursor: "pointer", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}>
+          <button key={cat} onClick={() => setActiveCategory(cat)} style={{ padding: "8px 16px", borderRadius: "20px", border: "none", backgroundColor: activeCategory === cat ? "#2563eb" : "#fff", color: activeCategory === cat ? "#fff" : "#475569", fontWeight: "600", fontSize: "13px", whiteSpace: "nowrap", cursor: "pointer" }}>
             {cat}
           </button>
         ))}
       </div>
 
-      {/* Products */}
+      {/* Product List */}
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        {filteredProducts.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "24px 12px", background: "#fff", borderRadius: "12px", color: "#64748b" }}>
-            <p style={{ margin: "0 0 8px", fontSize: "24px" }}>🔍</p>
-            <p style={{ margin: 0, fontSize: "14px", fontWeight: "600" }}>No products found for "{searchQuery}"</p>
-            <button onClick={() => setSearchQuery("")} style={{ marginTop: "10px", border: "none", background: "#eff6ff", color: "#2563eb", padding: "6px 12px", borderRadius: "8px", fontSize: "12px", fontWeight: "bold", cursor: "pointer" }}>Clear Search</button>
-          </div>
-        ) : (
-          filteredProducts.map((item) => (
-            <div key={item.id} style={{ background: "#fff", padding: "14px", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "space-between", boxShadow: "0 1px 2px rgba(0,0,0,0.04)" }}>
-              <div 
-                onClick={() => openProductDrawer(item)} 
-                style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer", flex: 1 }}
-              >
-                <div style={{ background: "#f8fafc", padding: "6px", borderRadius: "10px", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", minWidth: "48px", minHeight: "48px" }}>
-                  <ProductMedia src={item.image} alt={item.name} size="44px" />
-                  <span style={{ position: "absolute", bottom: "1px", right: "1px", fontSize: "9px", backgroundColor: "rgba(255,255,255,0.9)", borderRadius: "4px", padding: "1px 2px" }}>🔍</span>
-                </div>
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <h4 style={{ margin: "0", fontSize: "14px", color: "#0f172a" }}>{item.name}</h4>
-                    {item.badge && (
-                      <span style={{ fontSize: "9px", fontWeight: "bold", background: "#ef4444", color: "#fff", padding: "1px 5px", borderRadius: "4px" }}>
-                        {item.badge}
-                      </span>
-                    )}
-                  </div>
-                  <p style={{ color: "#2563eb", fontWeight: "bold", margin: "4px 0 0", fontSize: "14px" }}>{item.price} ETB</p>
-                </div>
+        {filteredProducts.map((item) => (
+          <div key={item.id} style={{ background: "#fff", padding: "14px", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div onClick={() => openProductDrawer(item)} style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer", flex: 1 }}>
+              <div style={{ background: "#f8fafc", padding: "6px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <ProductMedia src={item.image} alt={item.name} size="44px" />
               </div>
-              <button onClick={() => addToCart(item, 1)} style={{ background: "#2563eb", color: "#fff", border: "none", padding: "8px 14px", borderRadius: "8px", fontWeight: "bold", fontSize: "12px", cursor: "pointer" }}>
-                + Add
-              </button>
+              <div>
+                <h4 style={{ margin: "0", fontSize: "14px", color: "#0f172a" }}>{item.name}</h4>
+                <p style={{ color: "#2563eb", fontWeight: "bold", margin: "4px 0 0", fontSize: "14px" }}>{item.price} ETB</p>
+              </div>
             </div>
-          ))
-        )}
+            <button onClick={() => addToCart(item, 1)} style={{ background: "#2563eb", color: "#fff", border: "none", padding: "8px 14px", borderRadius: "8px", fontWeight: "bold", fontSize: "12px", cursor: "pointer" }}>
+              + Add
+            </button>
+          </div>
+        ))}
       </div>
 
-      {/* Item Detail Modal Drawer */}
+      {/* Detail Drawer Modal */}
       {selectedProduct && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(15, 23, 42, 0.65)",
-          backdropFilter: "blur(4px)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-end",
-          zIndex: 2000
-        }}>
-          <div style={{
-            background: "#fff",
-            borderTopLeftRadius: "24px",
-            borderTopRightRadius: "24px",
-            padding: "24px 20px",
-            maxWidth: "600px",
-            width: "100%",
-            boxShadow: "0 -10px 25px rgba(0,0,0,0.15)",
-            maxHeight: "88vh",
-            overflowY: "auto"
-          }}>
-            {/* Modal Header */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
-              <span style={{ fontSize: "12px", fontWeight: "bold", background: "#eff6ff", color: "#2563eb", padding: "4px 10px", borderRadius: "12px" }}>
-                {selectedProduct.category}
-              </span>
-              <button onClick={() => setSelectedProduct(null)} style={{ background: "#f1f5f9", border: "none", fontSize: "16px", borderRadius: "50%", width: "30px", height: "30px", cursor: "pointer", color: "#64748b" }}>✕</button>
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(15, 23, 42, 0.65)", display: "flex", justifyContent: "center", alignItems: "flex-end", zIndex: 2000 }}>
+          <div style={{ background: "#fff", borderTopLeftRadius: "24px", borderTopRightRadius: "24px", padding: "24px 20px", maxWidth: "600px", width: "100%", maxHeight: "88vh", overflowY: "auto" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "14px" }}>
+              <span style={{ fontSize: "12px", fontWeight: "bold", background: "#eff6ff", color: "#2563eb", padding: "4px 10px", borderRadius: "12px" }}>{selectedProduct.category}</span>
+              <button onClick={() => setSelectedProduct(null)} style={{ background: "#f1f5f9", border: "none", borderRadius: "50%", width: "30px", height: "30px", cursor: "pointer" }}>✕</button>
             </div>
-
-            {/* Main Product Image Display with Zoom Trigger */}
-            <div style={{ textAlign: "center", padding: "16px", backgroundColor: "#f8fafc", borderRadius: "16px", marginBottom: "12px", position: "relative" }}>
-              
-              {/* Zoom Icon Button */}
-              <button 
-                onClick={() => setIsZoomOpen(true)} 
-                title="Zoom into micro details"
-                style={{
-                  position: "absolute",
-                  top: "12px",
-                  right: "12px",
-                  backgroundColor: "#fff",
-                  border: "1px solid #cbd5e1",
-                  borderRadius: "20px",
-                  padding: "5px 10px",
-                  fontSize: "11px",
-                  fontWeight: "bold",
-                  color: "#2563eb",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  boxShadow: "0 2px 5px rgba(0,0,0,0.08)"
-                }}
-              >
-                <span>🔍 Zoom Details</span>
-              </button>
-
-              <div 
-                onClick={() => setIsZoomOpen(true)}
-                style={{ cursor: "zoom-in", padding: "12px 0", display: "flex", justifyContent: "center" }}
-              >
-                <ProductMedia src={activeAngle?.icon || selectedProduct.image} alt={selectedProduct.name} size="120px" />
-              </div>
-
-              <h2 style={{ margin: "8px 0 2px", fontSize: "18px", color: "#0f172a" }}>{selectedProduct.name}</h2>
-              <p style={{ fontSize: "12px", color: "#64748b", margin: "0 0 6px", fontWeight: "500" }}>
-                Angle: <strong>{activeAngle?.label || "Front"} View</strong> — {activeAngle?.desc}
-              </p>
+            <div style={{ textAlign: "center", padding: "16px", backgroundColor: "#f8fafc", borderRadius: "16px", marginBottom: "12px" }}>
+              <ProductMedia src={activeAngle?.icon || selectedProduct.image} alt={selectedProduct.name} size="100px" />
+              <h2 style={{ margin: "8px 0 2px", fontSize: "18px" }}>{selectedProduct.name}</h2>
               <p style={{ fontSize: "20px", fontWeight: "bold", color: "#2563eb", margin: 0 }}>{selectedProduct.price} ETB</p>
             </div>
-
-            {/* Multiple Product Angle Thumbnails */}
-            {selectedProduct.gallery && selectedProduct.gallery.length > 0 && (
-              <div style={{ marginBottom: "16px" }}>
-                <span style={{ fontSize: "11px", fontWeight: "bold", color: "#64748b", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>
-                  📸 Select Product Angle ({selectedProduct.gallery.length} Views):
-                </span>
-                <div style={{ display: "grid", gridTemplateColumns: `repeat(${selectedProduct.gallery.length}, 1fr)`, gap: "8px" }}>
-                  {selectedProduct.gallery.map((item, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveAngleIndex(idx)}
-                      style={{
-                        padding: "8px 4px",
-                        borderRadius: "10px",
-                        border: activeAngleIndex === idx ? "2px solid #2563eb" : "1px solid #cbd5e1",
-                        backgroundColor: activeAngleIndex === idx ? "#eff6ff" : "#fff",
-                        cursor: "pointer",
-                        textAlign: "center",
-                        transition: "all 0.15s ease",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center"
-                      }}
-                    >
-                      <ProductMedia src={item.icon} alt={item.label} size="32px" />
-                      <div style={{ fontSize: "10px", fontWeight: "bold", color: activeAngleIndex === idx ? "#1d4ed8" : "#475569", marginTop: "4px" }}>
-                        {item.label}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <p style={{ fontSize: "13px", color: "#475569", lineHeight: "1.5", margin: "0 0 16px" }}>
-              {selectedProduct.desc}
-            </p>
-
-            {/* Quantity Selector inside Drawer */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", backgroundColor: "#f1f5f9", padding: "10px 14px", borderRadius: "12px", marginBottom: "16px" }}>
-              <span style={{ fontSize: "13px", fontWeight: "600", color: "#334155" }}>Quantity:</span>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <button 
-                  onClick={() => setDetailQty(Math.max(1, detailQty - 1))}
-                  style={{ width: "32px", height: "32px", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#fff", fontWeight: "bold", cursor: "pointer" }}
-                >
-                  -
-                </button>
-                <span style={{ fontSize: "14px", fontWeight: "bold" }}>{detailQty}</span>
-                <button 
-                  onClick={() => setDetailQty(detailQty + 1)}
-                  style={{ width: "32px", height: "32px", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#fff", fontWeight: "bold", cursor: "pointer" }}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                addToCart(selectedProduct, detailQty);
-                setSelectedProduct(null);
-              }}
-              style={{
-                width: "100%",
-                backgroundColor: "#2563eb",
-                color: "#fff",
-                border: "none",
-                padding: "14px",
-                borderRadius: "12px",
-                fontWeight: "bold",
-                fontSize: "15px",
-                cursor: "pointer",
-                boxShadow: "0 4px 10px rgba(37, 99, 235, 0.25)"
-              }}
-            >
-              Add {detailQty}x to Cart • {selectedProduct.price * detailQty} ETB
+            <p style={{ fontSize: "13px", color: "#475569", margin: "0 0 16px" }}>{selectedProduct.desc}</p>
+            <button onClick={() => { addToCart(selectedProduct, detailQty); setSelectedProduct(null); }} style={{ width: "100%", backgroundColor: "#2563eb", color: "#fff", border: "none", padding: "14px", borderRadius: "12px", fontWeight: "bold", fontSize: "15px", cursor: "pointer" }}>
+              Add to Cart • {selectedProduct.price * detailQty} ETB
             </button>
           </div>
         </div>
       )}
 
-      {/* Full Screen Image Zoom Modal */}
-      {isZoomOpen && selectedProduct && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: "rgba(15, 23, 42, 0.95)",
-          zIndex: 3000,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          padding: "20px",
-          backdropFilter: "blur(8px)"
-        }}>
-          {/* Zoom Header */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <h3 style={{ color: "#fff", margin: 0, fontSize: "16px" }}>{selectedProduct.name}</h3>
-              <p style={{ color: "#94a3b8", margin: "2px 0 0", fontSize: "12px" }}>
-                {activeAngle?.label} Angle View • Zoom Level: {Math.round(zoomScale * 100)}%
-              </p>
-            </div>
-            <button 
-              onClick={() => { setIsZoomOpen(false); setZoomScale(1); }} 
-              style={{ background: "#334155", color: "#fff", border: "none", borderRadius: "50%", width: "36px", height: "36px", fontSize: "18px", cursor: "pointer" }}
-            >
-              ✕
-            </button>
-          </div>
-
-          {/* Zoom Canvas Area */}
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flex: 1, overflow: "hidden", padding: "20px" }}>
-            <div style={{
-              transform: `scale(${zoomScale})`,
-              transition: "transform 0.2s ease-out",
-              userSelect: "none",
-              filter: "drop-shadow(0 15px 25px rgba(0,0,0,0.5))"
-            }}>
-              <ProductMedia src={activeAngle?.icon || selectedProduct.image} alt={selectedProduct.name} size="220px" />
-            </div>
-          </div>
-
-          {/* Zoom Controls & Feature Note */}
-          <div style={{ background: "#1e293b", borderRadius: "16px", padding: "14px", textAlign: "center" }}>
-            <p style={{ color: "#cbd5e1", fontSize: "12px", margin: "0 0 10px" }}>
-              🔎 <strong>Micro Detail Feature:</strong> {activeAngle?.desc}
-            </p>
-            
-            <div style={{ display: "flex", justifyContent: "center", gap: "12px", alignItems: "center" }}>
-              <button 
-                onClick={() => setZoomScale(Math.max(1, zoomScale - 0.5))} 
-                style={{ padding: "8px 16px", borderRadius: "8px", border: "1px solid #475569", background: "#334155", color: "#fff", fontWeight: "bold", fontSize: "14px", cursor: "pointer" }}
-              >
-                ➖ Zoom Out
-              </button>
-              <button 
-                onClick={() => setZoomScale(1)} 
-                style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid #475569", background: "#334155", color: "#94a3b8", fontSize: "12px", cursor: "pointer" }}
-              >
-                Reset
-              </button>
-              <button 
-                onClick={() => setZoomScale(Math.min(3, zoomScale + 0.5))} 
-                style={{ padding: "8px 16px", borderRadius: "8px", border: "none", background: "#2563eb", color: "#fff", fontWeight: "bold", fontSize: "14px", cursor: "pointer" }}
-              >
-                ➕ Zoom In
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Cart & Checkout Form Section */}
-      <div id="checkout-section" style={{ marginTop: "24px", padding: "16px", background: "#fff", borderRadius: "16px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
-        <h3 style={{ margin: "0 0 12px", fontSize: "16px", color: "#0f172a" }}>🛒 Cart ({cartItemCount} items)</h3>
+      {/* Cart & Checkout */}
+      <div id="checkout-section" style={{ marginTop: "24px", padding: "16px", background: "#fff", borderRadius: "16px" }}>
+        <h3 style={{ margin: "0 0 12px", fontSize: "16px" }}>🛒 Cart ({cartItemCount} items)</h3>
         {cart.length === 0 ? (
-          <p style={{ color: "#94a3b8", fontSize: "14px", margin: "0" }}>Your cart is empty. Tap "+ Add" on any item above.</p>
+          <p style={{ color: "#94a3b8", fontSize: "14px", margin: "0" }}>Your cart is empty.</p>
         ) : (
           <div>
             {cart.map((c) => (
-              <div key={c.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "10px 0", paddingBottom: "10px", borderBottom: "1px solid #f1f5f9" }}>
+              <div key={c.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "10px 0" }}>
                 <div>
-                  <p style={{ margin: "0", fontSize: "13px", fontWeight: "600", color: "#1e293b" }}>{c.name}</p>
-                  <p style={{ margin: "2px 0 0", fontSize: "12px", color: "#2563eb" }}>{c.price} ETB × {c.quantity} = {c.price * c.quantity} ETB</p>
+                  <p style={{ margin: "0", fontSize: "13px", fontWeight: "600" }}>{c.name}</p>
+                  <p style={{ margin: "2px 0 0", fontSize: "12px", color: "#2563eb" }}>{c.price} ETB × {c.quantity}</p>
                 </div>
                 <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                  <button onClick={() => updateQuantity(c.id, -1)} style={{ width: "26px", height: "26px", borderRadius: "6px", border: "1px solid #cbd5e1", background: "#fff", cursor: "pointer", fontWeight: "bold" }}>-</button>
-                  <span style={{ fontSize: "13px", fontWeight: "bold", minWidth: "16px", textAlign: "center" }}>{c.quantity}</span>
-                  <button onClick={() => updateQuantity(c.id, 1)} style={{ width: "26px", height: "26px", borderRadius: "6px", border: "1px solid #cbd5e1", background: "#fff", cursor: "pointer", fontWeight: "bold" }}>+</button>
-                  <button onClick={() => removeFromCart(c.id)} style={{ width: "26px", height: "26px", borderRadius: "6px", border: "none", background: "#fee2e2", color: "#ef4444", cursor: "pointer", fontSize: "12px", marginLeft: "4px" }}>✕</button>
+                  <button onClick={() => updateQuantity(c.id, -1)} style={{ width: "26px", height: "26px", border: "1px solid #cbd5e1", background: "#fff" }}>-</button>
+                  <span>{c.quantity}</span>
+                  <button onClick={() => updateQuantity(c.id, 1)} style={{ width: "26px", height: "26px", border: "1px solid #cbd5e1", background: "#fff" }}>+</button>
+                  <button onClick={() => removeFromCart(c.id)} style={{ border: "none", background: "#fee2e2", color: "#ef4444", padding: "4px 8px", borderRadius: "4px" }}>✕</button>
                 </div>
               </div>
             ))}
-
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "14px", paddingTop: "10px", borderTop: "2px solid #f1f5f9" }}>
-              <span style={{ fontSize: "14px", color: "#64748b" }}>Total Amount:</span>
-              <span style={{ fontSize: "16px", fontWeight: "bold", color: "#0f172a" }}>{cartTotal} ETB</span>
-            </div>
-
             <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "16px" }}>
-              <input type="text" placeholder="Full Name" value={studentInfo.name} onChange={(e) => setStudentInfo({ ...studentInfo, name: e.target.value })} style={{ padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px", outline: "none" }} />
-              <input type="text" placeholder="Phone Number / Telegram" value={studentInfo.contact} onChange={(e) => setStudentInfo({ ...studentInfo, contact: e.target.value })} style={{ padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px", outline: "none" }} />
-              <input type="text" placeholder="Delivery Address / Location" value={studentInfo.campus} onChange={(e) => setStudentInfo({ ...studentInfo, campus: e.target.value })} style={{ padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px", outline: "none" }} />
+              <input type="text" placeholder="Full Name" value={studentInfo.name} onChange={(e) => setStudentInfo({ ...studentInfo, name: e.target.value })} style={{ padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
+              <input type="text" placeholder="Phone Number / Telegram" value={studentInfo.contact} onChange={(e) => setStudentInfo({ ...studentInfo, contact: e.target.value })} style={{ padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
+              <input type="text" placeholder="Delivery Address / Location" value={studentInfo.campus} onChange={(e) => setStudentInfo({ ...studentInfo, campus: e.target.value })} style={{ padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
+              <button onClick={handleReviewOrder} style={{ background: "#16a34a", color: "#fff", padding: "12px", border: "none", borderRadius: "8px", fontWeight: "bold", cursor: "pointer" }}>
+                Review & Order via Telegram
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
 
-              {/* Payment Method Selector */}
-              <div style={{ marginTop: "6px" }}>
-                <label style={{ fontSize: "12px", fontWeight: "bold", color: "#475569", marginBottom: "6px", display: "block" }}>
-                  Select Payment Method:
-                </label>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }}>
-                  {PAYMENT_METHODS.map((method) => (
-                    <button
-                      key={method.id}
-                      type="button"
-                      onClick={() => setPaymentMethod(method.id)}
-                      style={{
-                        padding: "8px 4px",
-                        borderRadius: "8px",
-                        border: paymentMethod === method.id ? "2px solid #2563eb" : "1px solid #cbd5e1",
-                        backgroundColor: paymentMethod === method.id ? "#eff6ff" : "#fff",
-                        color: paymentMethod === method.id ? "#1d4ed8" : "#475569",
-                        fontSize: "11px",
-                        fontWeight: "bold",
-                        cursor: "pointer",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        gap: "2px",
-                      }}
-                    >
-                      <span style={{ fontSize: "16px" }}>{method.icon}</span>
-                      {method.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
+      {/* Confirmation Modal */}
+      {showModal && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(15, 23, 42, 0.6)", display: "flex", justifyContent: "center", alignItems: "center", padding: "16px", zIndex: 2000 }}>
+          <div style={{ background: "#fff", borderRadius: "20px", padding: "20px", maxWidth: "480px", width: "100%" }}>
+            <h3>📋 Order Confirmation</h3>
+            <p><strong>Name:</strong> {studentInfo.name}</p>
+            <p><strong>Total:</strong> {cartTotal} ETB</p>
+            <div style={{ display: "flex", gap: "10px", marginTop: "16px" }}>
+              <button onClick={() => setShowModal(false)} style={{ flex: 1, padding: "12px", border: "1px solid #cbd5e1", background: "#fff" }}>Edit</button>
+              <button onClick={handleFinalCheckout} style={{ flex: 2, padding: "12px", border: "none", background: "#16a34a", color: "#fff", fontWeight: "bold" }}>Confirm & Send ✈️</button>
+            </div>
+          </div>
+        </div>
+      )}
 
-              <button onClick={handleReviewOrder} style={{ background: "#16a34a", color: "#fff", padding: "12px", border: "none", borderRadius: "8px", fontWeight: "bold", fontSize: "15px", cursor: "pointer", marginTop: "8px", boxShadow: "0 2px
+    </div>
+  );
+}
