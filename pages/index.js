@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const ProductMedia = ({ src, alt = "", size = "44px" }) => {
+const ProductMedia = ({ src, alt = "", size = "44px", onClick }) => {
   const [hasError, setHasError] = useState(false);
 
   if (src && (src.startsWith("/") || src.startsWith("http") || src.startsWith("data:")) && !hasError) {
@@ -9,7 +9,8 @@ const ProductMedia = ({ src, alt = "", size = "44px" }) => {
         src={src} 
         alt={alt} 
         onError={() => setHasError(true)}
-        style={{ width: size, height: size, objectFit: "cover", borderRadius: "8px" }} 
+        onClick={onClick}
+        style={{ width: size, height: size, objectFit: "cover", borderRadius: "8px", cursor: onClick ? "pointer" : "default" }} 
       />
     );
   }
@@ -33,16 +34,24 @@ export default function Home() {
   const [cart, setCart] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [adminPass, setAdminPass] = useState("");
-  const [showAdminModal, setShowAdminModal] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
+  const [zoomedImage, setZoomedImage] = useState(null);
 
   // Form state for adding/editing products
   const [newProduct, setNewProduct] = useState({ name: "", price: "", category: "Food & Snacks", image: "", desc: "" });
   const [editingId, setEditingId] = useState(null);
 
-  // Load saved products from LocalStorage
+  // Check Telegram User & Load Saved Products
   useEffect(() => {
+    // 1. Detect Telegram WebApp Username
+    if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
+      const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
+      if (tgUser && tgUser.username && tgUser.username.toLowerCase() === "bekivisuals1221") {
+        setIsOwner(true);
+      }
+    }
+
+    // 2. Load LocalStorage Products
     const saved = localStorage.getItem("yeshi_market_products");
     if (saved) {
       try { setProducts(JSON.parse(saved)); } catch (e) {}
@@ -64,16 +73,6 @@ export default function Home() {
         setNewProduct((prev) => ({ ...prev, image: reader.result }));
       };
       reader.readAsDataURL(file);
-    }
-  };
-
-  const handleAdminLogin = () => {
-    if (adminPass === "1234") {
-      setIsAdmin(true);
-      setShowAdminModal(false);
-      alert("🔓 Admin mode unlocked! You can now add and edit products with images.");
-    } else {
-      alert("❌ Incorrect passcode!");
     }
   };
 
@@ -111,28 +110,23 @@ export default function Home() {
   });
 
   return (
-    <div style={{ padding: "16px", fontFamily: "sans-serif", backgroundColor: "#f8fafc", minHeight: "100vh", maxWidth: "600px", margin: "0 auto" }}>
+    <div style={{ padding: "16px", fontFamily: "sans-serif", backgroundColor: "#f8fafc", minHeight: "100vh", maxWidth: "600px", margin: "0 auto", paddingBottom: "40px" }}>
       
-      {/* Top Header & Admin Trigger */}
+      {/* Top Header */}
       <div style={{ background: "#fff", padding: "16px", borderRadius: "16px", textAlign: "center", marginBottom: "16px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
         <h1 style={{ margin: "0 0 4px", fontSize: "22px" }}>Yeshi Market</h1>
-        <p style={{ margin: "0 0 12px", color: "#64748b", fontSize: "13px" }}>Simple Mobile Store</p>
+        <p style={{ margin: "0 0 8px", color: "#64748b", fontSize: "13px" }}>Food • Beauty • Accessories</p>
         
-        <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
-          {!isAdmin ? (
-            <button onClick={() => setShowAdminModal(true)} style={{ background: "#f1f5f9", border: "none", padding: "6px 12px", borderRadius: "12px", fontSize: "11px", cursor: "pointer", color: "#475569" }}>
-              ⚙️ Owner Login
-            </button>
-          ) : (
-            <button onClick={() => setIsAdmin(false)} style={{ background: "#fee2e2", color: "#ef4444", border: "none", padding: "6px 12px", borderRadius: "12px", fontSize: "11px", cursor: "pointer" }}>
-              🔒 Exit Admin Mode
-            </button>
-          )}
-        </div>
+        {/* Owner Badge - Only visible if logged in as @bekivisuals1221 */}
+        {isOwner && (
+          <span style={{ background: "#dbeafe", color: "#1e40af", padding: "4px 10px", borderRadius: "12px", fontSize: "11px", fontWeight: "bold" }}>
+            👑 Owner Mode Active (@bekivisuals1221)
+          </span>
+        )}
       </div>
 
-      {/* IN-APP OWNER PANEL WITH FILE UPLOAD */}
-      {isAdmin && (
+      {/* OWNER ADMIN PANEL - Strictly visible only for @bekivisuals1221 */}
+      {isOwner && (
         <div style={{ background: "#eff6ff", border: "2px dashed #2563eb", padding: "16px", borderRadius: "16px", marginBottom: "20px" }}>
           <h3 style={{ margin: "0 0 12px", color: "#1e40af" }}>{editingId ? "✏️ Edit Product" : "➕ Add New Product"}</h3>
           
@@ -144,17 +138,17 @@ export default function Home() {
               {CATEGORIES.filter(c => c !== "All").map(c => <option key={c} value={c}>{c}</option>)}
             </select>
 
-            {/* Image File Upload Control */}
+            {/* Photo Upload */}
             <div style={{ background: "#fff", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
               <label style={{ display: "block", fontSize: "12px", fontWeight: "bold", color: "#475569", marginBottom: "6px" }}>
-                📷 Upload Photo from Phone / PC:
+                📷 Upload Photo from Gallery:
               </label>
               <input type="file" accept="image/*" onChange={handleImageFileUpload} style={{ fontSize: "12px" }} />
               
               {newProduct.image && (
                 <div style={{ marginTop: "8px", display: "flex", alignItems: "center", gap: "8px" }}>
                   <img src={newProduct.image} alt="Preview" style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "6px" }} />
-                  <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: "bold" }}>✓ Photo Ready</span>
+                  <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: "bold" }}>✓ Photo Uploaded</span>
                 </div>
               )}
             </div>
@@ -174,7 +168,7 @@ export default function Home() {
       )}
 
       {/* Search & Categories */}
-      <input type="text" placeholder="🔍 Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} style={{ width: "100%", padding: "10px", borderRadius: "12px", border: "1px solid #cbd5e1", marginBottom: "12px", boxSizing: "border-box" }} />
+      <input type="text" placeholder="🔍 Search products..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} style={{ width: "100%", padding: "10px", borderRadius: "12px", border: "1px solid #cbd5e1", marginBottom: "12px", boxSizing: "border-box" }} />
       
       <div style={{ display: "flex", gap: "8px", overflowX: "auto", marginBottom: "16px" }}>
         {CATEGORIES.map((cat) => (
@@ -188,15 +182,28 @@ export default function Home() {
       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         {filtered.map((item) => (
           <div key={item.id} style={{ background: "#fff", padding: "12px", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <ProductMedia src={item.image} alt={item.name} size="48px" />
+              {/* Product Photo with Zoom Trigger */}
+              <div style={{ position: "relative" }}>
+                <ProductMedia src={item.image} alt={item.name} size="52px" onClick={() => item.image && setZoomedImage(item.image)} />
+                {item.image && (
+                  <button 
+                    onClick={() => setZoomedImage(item.image)} 
+                    style={{ position: "absolute", bottom: "-2px", right: "-2px", background: "#0f172a", color: "#fff", border: "none", borderRadius: "50%", width: "18px", height: "18px", fontSize: "10px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    🔍
+                  </button>
+                )}
+              </div>
+
               <div>
                 <h4 style={{ margin: "0", fontSize: "14px" }}>{item.name}</h4>
                 <p style={{ margin: "2px 0 0", color: "#2563eb", fontWeight: "bold" }}>{item.price} ETB</p>
               </div>
             </div>
 
-            {isAdmin ? (
+            {/* Owner Actions vs Regular User Actions */}
+            {isOwner ? (
               <div style={{ display: "flex", gap: "6px" }}>
                 <button onClick={() => handleEdit(item)} style={{ background: "#dbeafe", color: "#1d4ed8", border: "none", padding: "6px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", cursor: "pointer" }}>Edit</button>
                 <button onClick={() => handleDelete(item.id)} style={{ background: "#fee2e2", color: "#ef4444", border: "none", padding: "6px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", cursor: "pointer" }}>Delete</button>
@@ -210,17 +217,16 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Passcode Modal */}
-      {showAdminModal && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
-          <div style={{ background: "#fff", padding: "20px", borderRadius: "16px", maxWidth: "320px", width: "100%", textAlign: "center" }}>
-            <h3 style={{ margin: "0 0 8px" }}>Owner Passcode</h3>
-            <p style={{ fontSize: "12px", color: "#64748b", margin: "0 0 12px" }}>Enter pass to manage products directly</p>
-            <input type="password" placeholder="Passcode (default: 1234)" value={adminPass} onChange={(e) => setAdminPass(e.target.value)} style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", marginBottom: "12px", textAlign: "center", boxSizing: "border-box" }} />
-            <div style={{ display: "flex", gap: "8px" }}>
-              <button onClick={() => setShowAdminModal(false)} style={{ flex: 1, padding: "10px", border: "none", background: "#f1f5f9", cursor: "pointer" }}>Cancel</button>
-              <button onClick={handleAdminLogin} style={{ flex: 1, padding: "10px", border: "none", background: "#2563eb", color: "#fff", fontWeight: "bold", cursor: "pointer" }}>Unlock</button>
-            </div>
+      {/* 🔍 PHOTO ZOOM MODAL */}
+      {zoomedImage && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(15, 23, 42, 0.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", zIndex: 3000 }} onClick={() => setZoomedImage(null)}>
+          <div style={{ position: "relative", maxWidth: "90%", maxHeight: "80%" }} onClick={(e) => e.stopPropagation()}>
+            <img src={zoomedImage} alt="Zoomed View" style={{ width: "100%", height: "auto", maxHeight: "75vh", objectFit: "contain", borderRadius: "16px", boxShadow: "0 10px 25px rgba(0,0,0,0.5)" }} />
+            <button 
+              onClick={() => setZoomedImage(null)} 
+              style={{ position: "absolute", top: "-12px", right: "-12px", background: "#ef4444", color: "#fff", border: "none", borderRadius: "50%", width: "32px", height: "32px", fontWeight: "bold", fontSize: "16px", cursor: "pointer" }}>
+              ✕
+            </button>
           </div>
         </div>
       )}
