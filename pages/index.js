@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-// Free Public JSONBin Cloud Sync Bin for Yeshi Market
-const JSONBIN_BIN_ID = "66f42b3be41b4d34e437b01d"; // Default shared cloud database ID
-const JSONBIN_READ_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`;
+// Shared Cloud Database URL
+const JSONBIN_READ_URL = "https://api.jsonbin.io/v3/b/66f42b3be41b4d34e437b01d/latest";
+const JSONBIN_WRITE_URL = "https://api.jsonbin.io/v3/b/66f42b3be41b4d34e437b01d";
 
 const ProductMedia = ({ src, alt = "", size = "44px", onClick }) => {
   const [hasError, setHasError] = useState(false);
@@ -21,6 +21,7 @@ const ProductMedia = ({ src, alt = "", size = "44px", onClick }) => {
   return <span style={{ fontSize: "28px" }}>📦</span>;
 };
 
+// Base fallback products
 const INITIAL_PRODUCTS = [
   { id: 1, name: "1Kg High Quality Organic Peanut Butter", price: 500, category: "Food & Snacks", image: "https://i.ibb.co/mS2QZ3H/image.jpg", desc: "100% natural organic peanut butter." },
   { id: 2, name: "Ushas Lipgloss + Lip Balm + Charm Set", price: 650, category: "Beauty & Essentials", image: "https://i.ibb.co/xL1QxKq/image.jpg", desc: "Sparkle lipgloss and moisturizing lip balm set." },
@@ -38,27 +39,24 @@ export default function Home() {
   const [cart, setCart] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
-  
-  // Admin / Owner Mode Controls
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [inputPasscode, setInputPasscode] = useState("");
+  const [isOwner, setIsOwner] = useState(false);
   const [zoomedImage, setZoomedImage] = useState(null);
 
-  // Form state for adding/editing
+  // Form state for Owner panel
   const [newProduct, setNewProduct] = useState({ name: "", price: "", category: "Food & Snacks", image: "", desc: "" });
   const [editingId, setEditingId] = useState(null);
 
-  // 1. Fetch live cloud products on app load for everyone
   useEffect(() => {
-    fetchCloudProducts();
-
-    // Check if owner passcode was previously unlocked on this device
+    // 1. Detect Secret Admin URL parameter (?admin=Yeshi@1221)
     if (typeof window !== "undefined") {
-      if (localStorage.getItem("yeshi_owner_unlocked") === "true") {
-        setIsAdmin(true);
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("admin") === "Yeshi@1221") {
+        setIsOwner(true);
       }
     }
+
+    // 2. Fetch shared cloud database products for everyone
+    fetchCloudProducts();
   }, []);
 
   const fetchCloudProducts = async () => {
@@ -67,41 +65,26 @@ export default function Home() {
       const data = await res.json();
       if (data && data.record && Array.isArray(data.record)) {
         setProducts(data.record);
-        localStorage.setItem("yeshi_market_products", JSON.stringify(data.record));
       }
-    } catch (err) {
-      // Fallback to local cache if offline
-      const saved = localStorage.getItem("yeshi_market_products");
-      if (saved) {
-        try { setProducts(JSON.parse(saved)); } catch (e) {}
-      }
+    } catch (e) {
+      // Fallback
     }
   };
 
-  // 2. Save products locally AND sync to Cloud
-  const saveProducts = (updatedProducts) => {
-    setProducts(updatedProducts);
-    localStorage.setItem("yeshi_market_products", JSON.stringify(updatedProducts));
-  };
-
-  const handleAdminUnlock = () => {
-    if (inputPasscode === "1234") { // Owner Passcode
-      setIsAdmin(true);
-      localStorage.setItem("yeshi_owner_unlocked", "true");
-      setShowLoginModal(false);
-      setInputPasscode("");
-      alert("🔓 Owner Admin Mode Unlocked!");
-    } else {
-      alert("❌ Incorrect passcode! Access denied.");
+  const saveProductsToCloud = async (updatedList) => {
+    setProducts(updatedList);
+    try {
+      await fetch(JSONBIN_WRITE_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedList)
+      });
+      alert("✅ Product updated live for all customers!");
+    } catch (e) {
+      alert("Updated locally!");
     }
   };
 
-  const handleAdminLock = () => {
-    setIsAdmin(false);
-    localStorage.removeItem("yeshi_owner_unlocked");
-  };
-
-  // Compress & convert photo upload from device
   const handleImageFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -126,9 +109,8 @@ export default function Home() {
       updatedList = [...products, created];
     }
 
-    saveProducts(updatedList);
+    saveProductsToCloud(updatedList);
     setNewProduct({ name: "", price: "", category: "Food & Snacks", image: "", desc: "" });
-    alert("✅ Product saved successfully!");
   };
 
   const handleEdit = (prod) => {
@@ -138,9 +120,9 @@ export default function Home() {
   };
 
   const handleDelete = (id) => {
-    if (confirm("Delete this product permanently?")) {
+    if (confirm("Delete this product permanently for all customers?")) {
       const updatedList = products.filter((p) => p.id !== id);
-      saveProducts(updatedList);
+      saveProductsToCloud(updatedList);
     }
   };
 
@@ -153,27 +135,23 @@ export default function Home() {
   return (
     <div style={{ padding: "16px", fontFamily: "sans-serif", backgroundColor: "#f8fafc", minHeight: "100vh", maxWidth: "600px", margin: "0 auto", paddingBottom: "40px" }}>
       
-      {/* Top Header */}
+      {/* Top Header - Completely Clean for Customers */}
       <div style={{ background: "#fff", padding: "16px", borderRadius: "16px", textAlign: "center", marginBottom: "16px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
         <h1 style={{ margin: "0 0 4px", fontSize: "22px" }}>Yeshi Market</h1>
-        <p style={{ margin: "0 0 10px", color: "#64748b", fontSize: "13px" }}>Food • Beauty • Accessories</p>
+        <p style={{ margin: "0", color: "#64748b", fontSize: "13px" }}>Food • Beauty • Accessories</p>
         
-        {/* Discreet Owner Login / Lock Button */}
-        <div>
-          {!isAdmin ? (
-            <button onClick={() => setShowLoginModal(true)} style={{ background: "#f1f5f9", color: "#64748b", border: "none", padding: "6px 14px", borderRadius: "12px", fontSize: "11px", cursor: "pointer", fontWeight: "600" }}>
-              ⚙️ Admin Login
-            </button>
-          ) : (
-            <button onClick={handleAdminLock} style={{ background: "#fee2e2", color: "#ef4444", border: "none", padding: "6px 14px", borderRadius: "12px", fontSize: "11px", cursor: "pointer", fontWeight: "bold" }}>
-              🔒 Exit Owner Mode (@bekivisuals1221)
-            </button>
-          )}
-        </div>
+        {/* Owner Indicator - Only appears if secret link ?admin=Yeshi@1221 is opened */}
+        {isOwner && (
+          <div style={{ marginTop: "10px" }}>
+            <span style={{ background: "#dbeafe", color: "#1e40af", padding: "4px 12px", borderRadius: "12px", fontSize: "11px", fontWeight: "bold" }}>
+              👑 Owner Admin Dashboard Active
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* OWNER ADMIN PANEL - Visible ONLY when logged in as Owner */}
-      {isAdmin && (
+      {/* OWNER ADMIN PANEL - Visible strictly only on private secret URL */}
+      {isOwner && (
         <div style={{ background: "#eff6ff", border: "2px dashed #2563eb", padding: "16px", borderRadius: "16px", marginBottom: "20px" }}>
           <h3 style={{ margin: "0 0 12px", color: "#1e40af" }}>{editingId ? "✏️ Edit Product" : "➕ Add New Product"}</h3>
           
@@ -185,17 +163,17 @@ export default function Home() {
               {CATEGORIES.filter(c => c !== "All").map(c => <option key={c} value={c}>{c}</option>)}
             </select>
 
-            {/* Upload Photo from Device */}
+            {/* Photo Upload */}
             <div style={{ background: "#fff", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
               <label style={{ display: "block", fontSize: "12px", fontWeight: "bold", color: "#475569", marginBottom: "6px" }}>
-                📷 Select Photo from Phone / PC:
+                📷 Select Photo from Phone / PC Gallery:
               </label>
               <input type="file" accept="image/*" onChange={handleImageFileUpload} style={{ fontSize: "12px" }} />
               
               {newProduct.image && (
                 <div style={{ marginTop: "8px", display: "flex", alignItems: "center", gap: "8px" }}>
                   <img src={newProduct.image} alt="Preview" style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "6px" }} />
-                  <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: "bold" }}>✓ Photo Ready</span>
+                  <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: "bold" }}>✓ Photo Selected</span>
                 </div>
               )}
             </div>
@@ -203,7 +181,7 @@ export default function Home() {
             <textarea placeholder="Description" value={newProduct.desc} onChange={(e) => setNewProduct({ ...newProduct, desc: e.target.value })} style={{ padding: "8px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
             
             <button type="submit" style={{ background: "#2563eb", color: "#fff", border: "none", padding: "10px", borderRadius: "8px", fontWeight: "bold", cursor: "pointer" }}>
-              {editingId ? "Save Changes" : "Publish to Live Store"}
+              {editingId ? "Save & Publish Live" : "Publish to Live Store"}
             </button>
             {editingId && (
               <button type="button" onClick={() => { setEditingId(null); setNewProduct({ name: "", price: "", category: "Food & Snacks", image: "", desc: "" }); }} style={{ background: "#e2e8f0", border: "none", padding: "6px", borderRadius: "8px", cursor: "pointer" }}>
@@ -231,7 +209,7 @@ export default function Home() {
           <div key={item.id} style={{ background: "#fff", padding: "12px", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              {/* Product Image with Zoom Button */}
+              {/* Product Photo with Zoom Trigger */}
               <div style={{ position: "relative" }}>
                 <ProductMedia src={item.image} alt={item.name} size="52px" onClick={() => item.image && setZoomedImage(item.image)} />
                 {item.image && (
@@ -249,8 +227,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Admin Edit/Delete vs Customer Add to Cart */}
-            {isAdmin ? (
+            {/* Owner Edit/Delete vs Customer Add to Cart */}
+            {isOwner ? (
               <div style={{ display: "flex", gap: "6px" }}>
                 <button onClick={() => handleEdit(item)} style={{ background: "#dbeafe", color: "#1d4ed8", border: "none", padding: "6px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", cursor: "pointer" }}>Edit</button>
                 <button onClick={() => handleDelete(item.id)} style={{ background: "#fee2e2", color: "#ef4444", border: "none", padding: "6px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", cursor: "pointer" }}>Delete</button>
@@ -263,29 +241,6 @@ export default function Home() {
           </div>
         ))}
       </div>
-
-      {/* 🔐 OWNER LOGIN MODAL */}
-      {showLoginModal && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(15, 23, 42, 0.65)", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", zIndex: 3000 }}>
-          <div style={{ background: "#fff", borderRadius: "20px", padding: "20px", maxWidth: "340px", width: "100%", textAlign: "center" }}>
-            <h3 style={{ margin: "0 0 6px" }}>🔐 Owner Access</h3>
-            <p style={{ fontSize: "12px", color: "#64748b", margin: "0 0 14px" }}>Enter owner passcode to manage products</p>
-            
-            <input 
-              type="password" 
-              placeholder="Enter passcode (1234)" 
-              value={inputPasscode} 
-              onChange={(e) => setInputPasscode(e.target.value)} 
-              style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", marginBottom: "14px", textAlign: "center", boxSizing: "border-box", fontSize: "14px" }} 
-            />
-            
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button onClick={() => setShowLoginModal(false)} style={{ flex: 1, padding: "10px", border: "1px solid #cbd5e1", background: "#fff", borderRadius: "8px", cursor: "pointer" }}>Cancel</button>
-              <button onClick={handleAdminUnlock} style={{ flex: 1, padding: "10px", border: "none", background: "#2563eb", color: "#fff", borderRadius: "8px", fontWeight: "bold", cursor: "pointer" }}>Unlock</button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* 🔍 PHOTO ZOOM MODAL */}
       {zoomedImage && (
