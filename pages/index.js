@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
-// Shared Cloud Database URL
-const JSONBIN_READ_URL = "https://api.jsonbin.io/v3/b/66f42b3be41b4d34e437b01d/latest";
-const JSONBIN_WRITE_URL = "https://api.jsonbin.io/v3/b/66f42b3be41b4d34e437b01d";
+// Live Cloud Database Configuration
+const JSONBIN_BIN_ID = "66f42b3be41b4d34e437b01d";
+const JSONBIN_API_KEY = "$2a$10$RGGe.zR74MynrbUiY2F8tON1KQc5br2kxvm6l2UjQcq98L12Cy98i";
+
+const JSONBIN_READ_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`;
+const JSONBIN_WRITE_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
 const ProductMedia = ({ src, alt = "", size = "44px", onClick }) => {
   const [hasError, setHasError] = useState(false);
@@ -21,7 +24,6 @@ const ProductMedia = ({ src, alt = "", size = "44px", onClick }) => {
   return <span style={{ fontSize: "28px" }}>📦</span>;
 };
 
-// Base fallback products
 const INITIAL_PRODUCTS = [
   { id: 1, name: "1Kg High Quality Organic Peanut Butter", price: 500, category: "Food & Snacks", image: "https://i.ibb.co/mS2QZ3H/image.jpg", desc: "100% natural organic peanut butter." },
   { id: 2, name: "Ushas Lipgloss + Lip Balm + Charm Set", price: 650, category: "Beauty & Essentials", image: "https://i.ibb.co/xL1QxKq/image.jpg", desc: "Sparkle lipgloss and moisturizing lip balm set." },
@@ -41,13 +43,14 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isOwner, setIsOwner] = useState(false);
   const [zoomedImage, setZoomedImage] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Form state for Owner panel
   const [newProduct, setNewProduct] = useState({ name: "", price: "", category: "Food & Snacks", image: "", desc: "" });
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
-    // 1. Detect Secret Admin URL parameter (?admin=Yeshi@1221)
+    // 1. Check Secret Admin URL parameter (?admin=Yeshi@1221)
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get("admin") === "Yeshi@1221") {
@@ -55,42 +58,71 @@ export default function Home() {
       }
     }
 
-    // 2. Fetch shared cloud database products for everyone
+    // 2. Fetch live cloud database products for all users
     fetchCloudProducts();
   }, []);
 
   const fetchCloudProducts = async () => {
     try {
-      const res = await fetch(JSONBIN_READ_URL);
+      const res = await fetch(JSONBIN_READ_URL, {
+        headers: { "X-Master-Key": JSONBIN_API_KEY }
+      });
       const data = await res.json();
-      if (data && data.record && Array.isArray(data.record)) {
+      if (data && data.record && Array.isArray(data.record) && data.record.length > 0) {
         setProducts(data.record);
       }
     } catch (e) {
-      // Fallback
+      console.error("Cloud fetch error:", e);
     }
   };
 
   const saveProductsToCloud = async (updatedList) => {
     setProducts(updatedList);
+    setIsSaving(true);
     try {
-      await fetch(JSONBIN_WRITE_URL, {
+      const res = await fetch(JSONBIN_WRITE_URL, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Master-Key": JSONBIN_API_KEY
+        },
         body: JSON.stringify(updatedList)
       });
-      alert("✅ Product updated live for all customers!");
+
+      if (res.ok) {
+        alert("✅ Product updated live! All customers will see this change instantly.");
+      } else {
+        alert("⚠️ Cloud update failed. Check connection.");
+      }
     } catch (e) {
-      alert("Updated locally!");
+      alert("❌ Error saving to cloud database.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
+  // Compress & convert device photo upload
   const handleImageFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const img = new Image();
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewProduct((prev) => ({ ...prev, image: reader.result }));
+
+      reader.onload = (event) => {
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 400;
+          const scaleFactor = MAX_WIDTH / img.width;
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scaleFactor;
+
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+          setNewProduct((prev) => ({ ...prev, image: compressedBase64 }));
+        };
       };
       reader.readAsDataURL(file);
     }
@@ -140,7 +172,7 @@ export default function Home() {
         <h1 style={{ margin: "0 0 4px", fontSize: "22px" }}>Yeshi Market</h1>
         <p style={{ margin: "0", color: "#64748b", fontSize: "13px" }}>Food • Beauty • Accessories</p>
         
-        {/* Owner Indicator - Only appears if secret link ?admin=Yeshi@1221 is opened */}
+        {/* Owner Indicator - Only appears on private URL */}
         {isOwner && (
           <div style={{ marginTop: "10px" }}>
             <span style={{ background: "#dbeafe", color: "#1e40af", padding: "4px 12px", borderRadius: "12px", fontSize: "11px", fontWeight: "bold" }}>
@@ -150,7 +182,7 @@ export default function Home() {
         )}
       </div>
 
-      {/* OWNER ADMIN PANEL - Visible strictly only on private secret URL */}
+      {/* OWNER ADMIN PANEL */}
       {isOwner && (
         <div style={{ background: "#eff6ff", border: "2px dashed #2563eb", padding: "16px", borderRadius: "16px", marginBottom: "20px" }}>
           <h3 style={{ margin: "0 0 12px", color: "#1e40af" }}>{editingId ? "✏️ Edit Product" : "➕ Add New Product"}</h3>
@@ -173,15 +205,15 @@ export default function Home() {
               {newProduct.image && (
                 <div style={{ marginTop: "8px", display: "flex", alignItems: "center", gap: "8px" }}>
                   <img src={newProduct.image} alt="Preview" style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "6px" }} />
-                  <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: "bold" }}>✓ Photo Selected</span>
+                  <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: "bold" }}>✓ Photo Ready</span>
                 </div>
               )}
             </div>
 
             <textarea placeholder="Description" value={newProduct.desc} onChange={(e) => setNewProduct({ ...newProduct, desc: e.target.value })} style={{ padding: "8px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
             
-            <button type="submit" style={{ background: "#2563eb", color: "#fff", border: "none", padding: "10px", borderRadius: "8px", fontWeight: "bold", cursor: "pointer" }}>
-              {editingId ? "Save & Publish Live" : "Publish to Live Store"}
+            <button type="submit" disabled={isSaving} style={{ background: isSaving ? "#93c5fd" : "#2563eb", color: "#fff", border: "none", padding: "10px", borderRadius: "8px", fontWeight: "bold", cursor: "pointer" }}>
+              {isSaving ? "Publishing to Cloud..." : editingId ? "Save & Publish Live" : "Publish to Live Store"}
             </button>
             {editingId && (
               <button type="button" onClick={() => { setEditingId(null); setNewProduct({ name: "", price: "", category: "Food & Snacks", image: "", desc: "" }); }} style={{ background: "#e2e8f0", border: "none", padding: "6px", borderRadius: "8px", cursor: "pointer" }}>
@@ -209,7 +241,6 @@ export default function Home() {
           <div key={item.id} style={{ background: "#fff", padding: "12px", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              {/* Product Photo with Zoom Trigger */}
               <div style={{ position: "relative" }}>
                 <ProductMedia src={item.image} alt={item.name} size="52px" onClick={() => item.image && setZoomedImage(item.image)} />
                 {item.image && (
@@ -227,7 +258,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Owner Edit/Delete vs Customer Add to Cart */}
             {isOwner ? (
               <div style={{ display: "flex", gap: "6px" }}>
                 <button onClick={() => handleEdit(item)} style={{ background: "#dbeafe", color: "#1d4ed8", border: "none", padding: "6px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", cursor: "pointer" }}>Edit</button>
