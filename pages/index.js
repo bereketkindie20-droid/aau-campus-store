@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-// Cloud Database Credentials
+// Live Cloud Database Credentials
 const JSONBIN_BIN_ID = "66f42b3be41b4d34e437b01d";
 const JSONBIN_API_KEY = "$2a$10$RGGe.zR74MynrbUiY2F8tON1KQc5br2kxvm6l2UjQcq98L12Cy98i";
 
@@ -49,24 +49,42 @@ export default function Home() {
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
-    // 1. Check Secret Admin URL parameter (?admin=Yeshi@1221)
     if (typeof window !== "undefined") {
+      // 1. Check URL Parameter fallback (?admin=Yeshi@1221)
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get("admin") === "Yeshi@1221") {
         setIsOwner(true);
       }
+
+      // 2. Check Telegram WebApp User credentials (@bekivisuals1221 or 0950239368)
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.ready();
+        const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
+
+        if (tgUser) {
+          const username = (tgUser.username || "").toLowerCase();
+          const phone = (tgUser.phone_number || "").replace(/[^0-9]/g, "");
+
+          // Check handle or phone number (251950239368 / 0950239368)
+          if (
+            username === "bekivisuals1221" || 
+            phone.includes("950239368") || 
+            phone.includes("0950239368")
+          ) {
+            setIsOwner(true);
+          }
+        }
+      }
     }
 
-    // 2. Fetch live cloud database products for all users
+    // Fetch live cloud products on load
     fetchCloudProducts();
   }, []);
 
   const fetchCloudProducts = async () => {
     try {
       const res = await fetch(JSONBIN_READ_URL, {
-        headers: {
-          "X-Master-Key": JSONBIN_API_KEY
-        }
+        headers: { "X-Master-Key": JSONBIN_API_KEY }
       });
       const data = await res.json();
       if (data && data.record && Array.isArray(data.record) && data.record.length > 0) {
@@ -92,19 +110,18 @@ export default function Home() {
       });
 
       if (response.ok) {
-        alert("✅ Product updated live! All customers will see this change instantly.");
+        alert("✅ Updated live! All customers will see this change immediately.");
       } else {
-        const errData = await response.json();
-        alert(`⚠️ Cloud update failed: ${errData.message || 'Check Master Key'}`);
+        alert("⚠️ Cloud update failed. Check internet connection.");
       }
     } catch (e) {
-      alert("❌ Error saving to cloud database. Please try again.");
+      alert("❌ Error saving to cloud database.");
     } finally {
       setIsSaving(false);
     }
   };
 
-  // Compress & convert uploaded image file
+  // Compress photo aggressively (max 300px) so JSONBin accepts payload
   const handleImageFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -115,7 +132,7 @@ export default function Home() {
         img.src = event.target.result;
         img.onload = () => {
           const canvas = document.createElement("canvas");
-          const MAX_WIDTH = 400;
+          const MAX_WIDTH = 300;
           const scaleFactor = MAX_WIDTH / img.width;
           canvas.width = MAX_WIDTH;
           canvas.height = img.height * scaleFactor;
@@ -123,8 +140,7 @@ export default function Home() {
           const ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-          // Standard compressed JPEG string
-          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.6);
           setNewProduct((prev) => ({ ...prev, image: compressedBase64 }));
         };
       };
@@ -171,22 +187,22 @@ export default function Home() {
   return (
     <div style={{ padding: "16px", fontFamily: "sans-serif", backgroundColor: "#f8fafc", minHeight: "100vh", maxWidth: "600px", margin: "0 auto", paddingBottom: "40px" }}>
       
-      {/* Top Header - Completely Clean for Customers */}
+      {/* Header */}
       <div style={{ background: "#fff", padding: "16px", borderRadius: "16px", textAlign: "center", marginBottom: "16px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
         <h1 style={{ margin: "0 0 4px", fontSize: "22px" }}>Yeshi Market</h1>
         <p style={{ margin: "0", color: "#64748b", fontSize: "13px" }}>Food • Beauty • Accessories</p>
         
-        {/* Owner Indicator - Only appears on private URL */}
+        {/* Owner Indicator - Only visible for @bekivisuals1221 / 0950239368 / ?admin=Yeshi@1221 */}
         {isOwner && (
           <div style={{ marginTop: "10px" }}>
             <span style={{ background: "#dbeafe", color: "#1e40af", padding: "4px 12px", borderRadius: "12px", fontSize: "11px", fontWeight: "bold" }}>
-              👑 Owner Admin Dashboard Active
+              👑 Owner Mode Active (@bekivisuals1221)
             </span>
           </div>
         )}
       </div>
 
-      {/* OWNER ADMIN PANEL */}
+      {/* OWNER ADMIN PANEL - Strictly hidden from regular customers */}
       {isOwner && (
         <div style={{ background: "#eff6ff", border: "2px dashed #2563eb", padding: "16px", borderRadius: "16px", marginBottom: "20px" }}>
           <h3 style={{ margin: "0 0 12px", color: "#1e40af" }}>{editingId ? "✏️ Edit Product" : "➕ Add New Product"}</h3>
@@ -202,7 +218,7 @@ export default function Home() {
             {/* Photo Upload */}
             <div style={{ background: "#fff", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
               <label style={{ display: "block", fontSize: "12px", fontWeight: "bold", color: "#475569", marginBottom: "6px" }}>
-                📷 Select Photo from Phone / PC Gallery:
+                📷 Select Photo from Phone Gallery:
               </label>
               <input type="file" accept="image/*" onChange={handleImageFileUpload} style={{ fontSize: "12px" }} />
               
@@ -262,6 +278,7 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Edit / Delete buttons show strictly for @bekivisuals1221 / 0950239368 / private URL */}
             {isOwner ? (
               <div style={{ display: "flex", gap: "6px" }}>
                 <button onClick={() => handleEdit(item)} style={{ background: "#dbeafe", color: "#1d4ed8", border: "none", padding: "6px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", cursor: "pointer" }}>Edit</button>
