@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ProductMedia = ({ src, alt = "", size = "32px" }) => {
+const ProductMedia = ({ src, alt = "", size = "44px" }) => {
   const [hasError, setHasError] = useState(false);
 
   if (src && (src.startsWith("/") || src.startsWith("http")) && !hasError) {
@@ -9,11 +9,11 @@ const ProductMedia = ({ src, alt = "", size = "32px" }) => {
         src={src} 
         alt={alt} 
         onError={() => setHasError(true)}
-        style={{ width: size, height: size, objectFit: "contain", borderRadius: "8px" }} 
+        style={{ width: size, height: size, objectFit: "cover", borderRadius: "8px" }} 
       />
     );
   }
-  return <span style={{ fontSize: size }}>{src && !src.startsWith("/") && !src.startsWith("http") ? src : "📦"}</span>;
+  return <span style={{ fontSize: "28px" }}>📦</span>;
 };
 
 const CATEGORIES = [
@@ -36,9 +36,9 @@ const PRODUCTS = [
     name: "1Kg High Quality Organic Peanut Butter", 
     price: 500, 
     category: "Food & Snacks", 
-    image: "https://t.me/yeshimarketcenter/17", 
+    image: "https://ibb.co/TBKrWTyp", 
     gallery: [
-      { label: "Tub View", icon: "https://t.me/yeshimarketcenter/17", desc: "1Kg fresh high quality organic peanut butter" }
+      { label: "Tub View", icon: "https://ibb.co/TBKrWTyp", desc: "1Kg fresh high quality organic peanut butter" }
     ],
     badge: "FRESH", 
     desc: "100% natural organic peanut butter, freshly prepared and packed." 
@@ -50,9 +50,9 @@ const PRODUCTS = [
     name: "Ushas Lipgloss + Lip Balm + Charm Set", 
     price: 650, 
     category: "Beauty & Essentials", 
-    image: "https://t.me/yeshimarketcenter/3?single", 
+    image: "https://ibb.co/wZrhVW0Z", 
     gallery: [
-      { label: "Full Set", icon: "https://t.me/yeshimarketcenter/3?single", desc: "Ushas Lipgloss, Brightening Lip Balm & Cute Fluffy Charm" }
+      { label: "Full Set", icon: "https://ibb.co/wZrhVW0Z", desc: "Ushas Lipgloss, Brightening Lip Balm & Cute Fluffy Charm" }
     ],
     badge: "BESTSELLER", 
     desc: "Ushas sparkle lipgloss and moisturizing lip balm set attached to a cute collectible bag charm." 
@@ -62,21 +62,21 @@ const PRODUCTS = [
     name: "Lotion and Body Splash Gift Set", 
     price: 1500, 
     category: "Beauty & Essentials", 
-    image: "https://t.me/yeshimarketcenter/4?single", 
+    image: "https://ibb.co/0R6gtJ3q", 
     gallery: [
-      { label: "Set View", icon: "https://t.me/yeshimarketcenter/4?single", desc: "Fragrance lotion and body mist set for long-lasting freshness" }
+      { label: "Set View", icon: "https://ibb.co/0R6gtJ3q", desc: "Fragrance lotion and body mist set for long-lasting freshness" }
     ],
     badge: "LUXURY", 
     desc: "Exquisite body philosophy gift set featuring fragrance lotion and matching body mist." 
   },
   { 
     id: 4, 
-    name: "Peptide Lip Gloss & Tint", 
+    name: "Lip Gloss Tint", 
     price: 450, 
     category: "Beauty & Essentials", 
-    image: "https://t.me/yeshimarketcenter/7?single", 
+    image: "https://ibb.co/5h0mpsxf", 
     gallery: [
-      { label: "Shades", icon: "https://t.me/yeshimarketcenter/7?single", desc: "Nourishing peptide lip gloss and tint collection" }
+      { label: "Shades", icon: "https://ibb.co/5h0mpsxf", desc: "Nourishing lip gloss and tint collection" }
     ],
     badge: "NEW", 
     desc: "Glossy, moisturizing lip tint that blends easily for soft, nourished pigmented lips." 
@@ -88,9 +88,9 @@ const PRODUCTS = [
     name: "Star Hair Clips", 
     price: 55, 
     category: "Bags & Accessories", 
-    image: "https://t.me/yeshimarketcenter/8?single", 
+    image: "https://ibb.co/k2pP5NFH", 
     gallery: [
-      { label: "Assorted", icon: "https://t.me/yeshimarketcenter/8?single", desc: "Trendy star-shaped hair clips in multiple cute colors (Price per piece)" }
+      { label: "Assorted", icon: "https://ibb.co/k2pP5NFH", desc: "Trendy star-shaped hair clips in multiple cute colors (Price per piece)" }
     ],
     badge: "HOT", 
     desc: "Trendy star hair clips available in various cute colors. Price is per piece." 
@@ -100,9 +100,9 @@ const PRODUCTS = [
     name: "Luxury Gold Statement Ring", 
     price: 300, 
     category: "Bags & Accessories", 
-    image: "https://t.me/yeshimarketcenter/10", 
+    image: "https://ibb.co/CpjGPHQx", 
     gallery: [
-      { label: "Ring View", icon: "https://t.me/yeshimarketcenter/10", desc: "Elegant gold-plated ring design" }
+      { label: "Ring View", icon: "https://ibb.co/CpjGPHQx", desc: "Elegant gold-plated ring design" }
     ],
     badge: "TRENDING", 
     desc: "Beautiful statement gold ring crafted with intricate details and comfortable fit." 
@@ -112,9 +112,9 @@ const PRODUCTS = [
     name: "Elegant Cross Necklace", 
     price: 450, 
     category: "Bags & Accessories", 
-    image: "https://t.me/yeshimarketcenter/11?single", 
+    image: "https://ibb.co/jZThb4cD", 
     gallery: [
-      { label: "Pendant View", icon: "https://t.me/yeshimarketcenter/11?single", desc: "Stunning cross necklace pendant on fine chain" }
+      { label: "Pendant View", icon: "https://ibb.co/jZThb4cD", desc: "Stunning cross necklace pendant on fine chain" }
     ],
     badge: "POPULAR", 
     desc: "Stunning high-quality cross necklace available in an elegant finish." 
