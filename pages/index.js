@@ -1,12 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
+// Helper component that extracts direct CDN image URLs from Telegram public post embeds
 const ProductMedia = ({ src, alt = "", size = "44px" }) => {
+  const [imgSrc, setImgSrc] = useState(src);
   const [hasError, setHasError] = useState(false);
 
-  if (src && (src.startsWith("/") || src.startsWith("http")) && !hasError) {
+  useEffect(() => {
+    if (src && src.includes("t.me/")) {
+      // Clean Telegram post link for embedding
+      const cleanUrl = src.split('?')[0]; 
+      const embedUrl = `${cleanUrl}?embed=1`;
+
+      // Fetch the embedded Telegram post page to grab the direct CDN photo source
+      fetch(embedUrl)
+        .then((res) => res.text())
+        .then((html) => {
+          const match = html.match(/background-image:url\('([^']+)'\)/);
+          if (match && match[1]) {
+            setImgSrc(match[1]);
+          }
+        })
+        .catch(() => setHasError(true));
+    } else {
+      setImgSrc(src);
+    }
+  }, [src]);
+
+  if (imgSrc && (imgSrc.startsWith("/") || imgSrc.startsWith("http")) && !hasError) {
     return (
       <img 
-        src={src} 
+        src={imgSrc} 
         alt={alt} 
         onError={() => setHasError(true)}
         style={{ width: size, height: size, objectFit: "cover", borderRadius: "8px" }} 
@@ -36,23 +59,23 @@ const PRODUCTS = [
     name: "1Kg High Quality Organic Peanut Butter", 
     price: 500, 
     category: "Food & Snacks", 
-    image: "https://i.ibb.co/mS2QZ3H/image.jpg", 
+    image: "https://t.me/yeshimarketcenter/17", 
     gallery: [
-      { label: "Tub View", icon: "https://i.ibb.co/mS2QZ3H/image.jpg", desc: "1Kg fresh high quality organic peanut butter" }
+      { label: "Tub View", icon: "https://t.me/yeshimarketcenter/17", desc: "1Kg fresh high quality organic peanut butter" }
     ],
     badge: "FRESH", 
     desc: "100% natural organic peanut butter, freshly prepared and packed." 
   },
 
-  // 2. Beauty & Essentials (Cosmetics, Lip Gloss, Lotions)
+  // 2. Beauty & Essentials
   { 
     id: 2, 
     name: "Ushas Lipgloss + Lip Balm + Charm Set", 
     price: 650, 
     category: "Beauty & Essentials", 
-    image: "https://i.ibb.co/xL1QxKq/image.jpg", 
+    image: "https://t.me/yeshimarketcenter/2", 
     gallery: [
-      { label: "Full Set", icon: "https://i.ibb.co/xL1QxKq/image.jpg", desc: "Ushas Lipgloss, Brightening Lip Balm & Cute Fluffy Charm" }
+      { label: "Full Set", icon: "https://t.me/yeshimarketcenter/2", desc: "Ushas Lipgloss, Brightening Lip Balm & Cute Fluffy Charm" }
     ],
     badge: "BESTSELLER", 
     desc: "Ushas sparkle lipgloss and moisturizing lip balm set attached to a cute collectible bag charm." 
@@ -62,9 +85,9 @@ const PRODUCTS = [
     name: "Lotion and Body Splash Gift Set", 
     price: 1500, 
     category: "Beauty & Essentials", 
-    image: "https://i.ibb.co/4P2X2S2/image.jpg", 
+    image: "https://t.me/yeshimarketcenter/4", 
     gallery: [
-      { label: "Set View", icon: "https://i.ibb.co/4P2X2S2/image.jpg", desc: "Fragrance lotion and body mist set for long-lasting freshness" }
+      { label: "Set View", icon: "https://t.me/yeshimarketcenter/4", desc: "Fragrance lotion and body mist set for long-lasting freshness" }
     ],
     badge: "LUXURY", 
     desc: "Exquisite body philosophy gift set featuring fragrance lotion and matching body mist." 
@@ -74,23 +97,23 @@ const PRODUCTS = [
     name: "Lip Gloss Tint", 
     price: 450, 
     category: "Beauty & Essentials", 
-    image: "https://i.ibb.co/MkhqN0g/image.jpg", 
+    image: "https://t.me/yeshimarketcenter/6", 
     gallery: [
-      { label: "Shades", icon: "https://i.ibb.co/MkhqN0g/image.jpg", desc: "Nourishing lip gloss and tint collection" }
+      { label: "Shades", icon: "https://t.me/yeshimarketcenter/6", desc: "Nourishing lip gloss and tint collection" }
     ],
     badge: "NEW", 
     desc: "Glossy, moisturizing lip tint that blends easily for soft, nourished pigmented lips." 
   },
 
-  // 3. Bags & Accessories (Jewelry & Hair Clips)
+  // 3. Bags & Accessories
   { 
     id: 5, 
     name: "Star Hair Clips", 
     price: 55, 
     category: "Bags & Accessories", 
-    image: "https://i.ibb.co/PzhQJ1S/image.jpg", 
+    image: "https://t.me/yeshimarketcenter/8", 
     gallery: [
-      { label: "Assorted", icon: "https://i.ibb.co/PzhQJ1S/image.jpg", desc: "Trendy star-shaped hair clips in multiple cute colors (Price per piece)" }
+      { label: "Assorted", icon: "https://t.me/yeshimarketcenter/8", desc: "Trendy star-shaped hair clips in multiple cute colors (Price per piece)" }
     ],
     badge: "HOT", 
     desc: "Trendy star hair clips available in various cute colors. Price is per piece." 
@@ -100,9 +123,9 @@ const PRODUCTS = [
     name: "Luxury Gold Statement Ring", 
     price: 300, 
     category: "Bags & Accessories", 
-    image: "https://i.ibb.co/H2D5434/image.jpg", 
+    image: "https://t.me/yeshimarketcenter/10", 
     gallery: [
-      { label: "Ring View", icon: "https://i.ibb.co/H2D5434/image.jpg", desc: "Elegant gold-plated ring design" }
+      { label: "Ring View", icon: "https://t.me/yeshimarketcenter/10", desc: "Elegant gold-plated ring design" }
     ],
     badge: "TRENDING", 
     desc: "Beautiful statement gold ring crafted with intricate details and comfortable fit." 
@@ -112,9 +135,9 @@ const PRODUCTS = [
     name: "Elegant Cross Necklace", 
     price: 450, 
     category: "Bags & Accessories", 
-    image: "https://i.ibb.co/q1y9wD1/image.jpg", 
+    image: "https://t.me/yeshimarketcenter/11", 
     gallery: [
-      { label: "Pendant View", icon: "https://i.ibb.co/q1y9wD1/image.jpg", desc: "Stunning cross necklace pendant on fine chain" }
+      { label: "Pendant View", icon: "https://t.me/yeshimarketcenter/11", desc: "Stunning cross necklace pendant on fine chain" }
     ],
     badge: "POPULAR", 
     desc: "Stunning high-quality cross necklace available in an elegant finish." 
