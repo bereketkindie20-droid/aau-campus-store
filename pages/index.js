@@ -43,20 +43,32 @@ export default function Home() {
 
   // Check Telegram User & Load Saved Products
   useEffect(() => {
-    // 1. Detect Telegram WebApp Username
-    if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
-      const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
+    if (typeof window !== "undefined") {
+      // 1. Check if Telegram WebApp says you are @bekivisuals1221
+      const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
       if (tgUser && tgUser.username && tgUser.username.toLowerCase() === "bekivisuals1221") {
+        setIsOwner(true);
+      }
+
+      // 2. Also check localStorage override so it stays open if you toggled it on
+      const localOwner = localStorage.getItem("yeshi_owner_mode");
+      if (localOwner === "true") {
         setIsOwner(true);
       }
     }
 
-    // 2. Load LocalStorage Products
+    // Load LocalStorage Products
     const saved = localStorage.getItem("yeshi_market_products");
     if (saved) {
       try { setProducts(JSON.parse(saved)); } catch (e) {}
     }
   }, []);
+
+  const toggleOwnerMode = () => {
+    const nextState = !isOwner;
+    setIsOwner(nextState);
+    localStorage.setItem("yeshi_owner_mode", nextState ? "true" : "false");
+  };
 
   // Save changes
   const saveProducts = (updated) => {
@@ -117,15 +129,13 @@ export default function Home() {
         <h1 style={{ margin: "0 0 4px", fontSize: "22px" }}>Yeshi Market</h1>
         <p style={{ margin: "0 0 8px", color: "#64748b", fontSize: "13px" }}>Food • Beauty • Accessories</p>
         
-        {/* Owner Badge - Only visible if logged in as @bekivisuals1221 */}
-        {isOwner && (
-          <span style={{ background: "#dbeafe", color: "#1e40af", padding: "4px 10px", borderRadius: "12px", fontSize: "11px", fontWeight: "bold" }}>
-            👑 Owner Mode Active (@bekivisuals1221)
-          </span>
-        )}
+        {/* Owner Toggle Button */}
+        <button onClick={toggleOwnerMode} style={{ background: isOwner ? "#dbeafe" : "#f1f5f9", color: isOwner ? "#1e40af" : "#64748b", border: "none", padding: "6px 14px", borderRadius: "14px", fontSize: "11px", fontWeight: "bold", cursor: "pointer" }}>
+          {isOwner ? "👑 Owner Mode: ON" : "⚙️ Owner Toggle"}
+        </button>
       </div>
 
-      {/* OWNER ADMIN PANEL - Strictly visible only for @bekivisuals1221 */}
+      {/* OWNER ADMIN PANEL */}
       {isOwner && (
         <div style={{ background: "#eff6ff", border: "2px dashed #2563eb", padding: "16px", borderRadius: "16px", marginBottom: "20px" }}>
           <h3 style={{ margin: "0 0 12px", color: "#1e40af" }}>{editingId ? "✏️ Edit Product" : "➕ Add New Product"}</h3>
