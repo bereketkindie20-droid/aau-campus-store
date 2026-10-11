@@ -36,9 +36,9 @@ const PRODUCTS = [
     name: "1Kg High Quality Organic Peanut Butter", 
     price: 500, 
     category: "Food & Snacks", 
-    image: "https://images.unsplash.com/photo-1589782162703-fc76999282ab?w=500", 
+    image: "https://i.ibb.co/mS2QZ3H/image.jpg", 
     gallery: [
-      { label: "Tub View", icon: "https://images.unsplash.com/photo-1589782162703-fc76999282ab?w=500", desc: "1Kg fresh high quality organic peanut butter" }
+      { label: "Tub View", icon: "https://i.ibb.co/mS2QZ3H/image.jpg", desc: "1Kg fresh high quality organic peanut butter" }
     ],
     badge: "FRESH", 
     desc: "100% natural organic peanut butter, freshly prepared and packed." 
@@ -50,9 +50,9 @@ const PRODUCTS = [
     name: "Ushas Lipgloss + Lip Balm + Charm Set", 
     price: 650, 
     category: "Beauty & Essentials", 
-    image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=500", 
+    image: "https://i.ibb.co/xL1QxKq/image.jpg", 
     gallery: [
-      { label: "Full Set", icon: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=500", desc: "Ushas Lipgloss, Brightening Lip Balm & Cute Fluffy Charm" }
+      { label: "Full Set", icon: "https://i.ibb.co/xL1QxKq/image.jpg", desc: "Ushas Lipgloss, Brightening Lip Balm & Cute Fluffy Charm" }
     ],
     badge: "BESTSELLER", 
     desc: "Ushas sparkle lipgloss and moisturizing lip balm set attached to a cute collectible bag charm." 
@@ -62,9 +62,9 @@ const PRODUCTS = [
     name: "Lotion and Body Splash Gift Set", 
     price: 1500, 
     category: "Beauty & Essentials", 
-    image: "https://images.unsplash.com/photo-1608248597359-9944a33994a5?w=500", 
+    image: "https://i.ibb.co/4P2X2S2/image.jpg", 
     gallery: [
-      { label: "Set View", icon: "https://images.unsplash.com/photo-1608248597359-9944a33994a5?w=500", desc: "Fragrance lotion and body mist set for long-lasting freshness" }
+      { label: "Set View", icon: "https://i.ibb.co/4P2X2S2/image.jpg", desc: "Fragrance lotion and body mist set for long-lasting freshness" }
     ],
     badge: "LUXURY", 
     desc: "Exquisite body philosophy gift set featuring fragrance lotion and matching body mist." 
@@ -74,9 +74,9 @@ const PRODUCTS = [
     name: "Lip Gloss Tint", 
     price: 450, 
     category: "Beauty & Essentials", 
-    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500", 
+    image: "https://i.ibb.co/MkhqN0g/image.jpg", 
     gallery: [
-      { label: "Shades", icon: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500", desc: "Nourishing lip gloss and tint collection" }
+      { label: "Shades", icon: "https://i.ibb.co/MkhqN0g/image.jpg", desc: "Nourishing lip gloss and tint collection" }
     ],
     badge: "NEW", 
     desc: "Glossy, moisturizing lip tint that blends easily for soft, nourished pigmented lips." 
@@ -88,9 +88,9 @@ const PRODUCTS = [
     name: "Star Hair Clips", 
     price: 55, 
     category: "Bags & Accessories", 
-    image: "https://images.unsplash.com/photo-1535223289827-42f1e9919769?w=500", 
+    image: "https://i.ibb.co/PzhQJ1S/image.jpg", 
     gallery: [
-      { label: "Assorted", icon: "https://images.unsplash.com/photo-1535223289827-42f1e9919769?w=500", desc: "Trendy star-shaped hair clips in multiple cute colors (Price per piece)" }
+      { label: "Assorted", icon: "https://i.ibb.co/PzhQJ1S/image.jpg", desc: "Trendy star-shaped hair clips in multiple cute colors (Price per piece)" }
     ],
     badge: "HOT", 
     desc: "Trendy star hair clips available in various cute colors. Price is per piece." 
@@ -100,9 +100,9 @@ const PRODUCTS = [
     name: "Luxury Gold Statement Ring", 
     price: 300, 
     category: "Bags & Accessories", 
-    image: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=500", 
+    image: "https://i.ibb.co/H2D5434/image.jpg", 
     gallery: [
-      { label: "Ring View", icon: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=500", desc: "Elegant gold-plated ring design" }
+      { label: "Ring View", icon: "https://i.ibb.co/H2D5434/image.jpg", desc: "Elegant gold-plated ring design" }
     ],
     badge: "TRENDING", 
     desc: "Beautiful statement gold ring crafted with intricate details and comfortable fit." 
@@ -112,9 +112,9 @@ const PRODUCTS = [
     name: "Elegant Cross Necklace", 
     price: 450, 
     category: "Bags & Accessories", 
-    image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500", 
+    image: "https://i.ibb.co/q1y9wD1/image.jpg", 
     gallery: [
-      { label: "Pendant View", icon: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500", desc: "Stunning cross necklace pendant on fine chain" }
+      { label: "Pendant View", icon: "https://i.ibb.co/q1y9wD1/image.jpg", desc: "Stunning cross necklace pendant on fine chain" }
     ],
     badge: "POPULAR", 
     desc: "Stunning high-quality cross necklace available in an elegant finish." 
@@ -337,7 +337,7 @@ export default function Home() {
         ) : (
           <div>
             {cart.map((c) => (
-              <div key={c.id} style={{ display: "flex", justifyContent: "space-linejoin", alignItems: "center", margin: "10px 0" }}>
+              <div key={c.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "10px 0" }}>
                 <div>
                   <p style={{ margin: "0", fontSize: "13px", fontWeight: "600" }}>{c.name}</p>
                   <p style={{ margin: "2px 0 0", fontSize: "12px", color: "#2563eb" }}>{c.price} ETB × {c.quantity}</p>
