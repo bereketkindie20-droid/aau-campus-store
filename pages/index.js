@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 const ProductMedia = ({ src, alt = "", size = "44px" }) => {
   const [hasError, setHasError] = useState(false);
 
-  if (src && (src.startsWith("/") || src.startsWith("http")) && !hasError) {
+  if (src && (src.startsWith("/") || src.startsWith("http") || src.startsWith("data:")) && !hasError) {
     return (
       <img 
         src={src} 
@@ -17,13 +17,13 @@ const ProductMedia = ({ src, alt = "", size = "44px" }) => {
 };
 
 const INITIAL_PRODUCTS = [
-  { id: 1, name: "1Kg High Quality Organic Peanut Butter", price: 500, category: "Food & Snacks", image: "https://i.ibb.co/mS2QZ3H/image.jpg", desc: "100% natural organic peanut butter." },
-  { id: 2, name: "Ushas Lipgloss + Lip Balm + Charm Set", price: 650, category: "Beauty & Essentials", image: "https://i.ibb.co/xL1QxKq/image.jpg", desc: "Sparkle lipgloss and moisturizing lip balm set." },
-  { id: 3, name: "Lotion and Body Splash Gift Set", price: 1500, category: "Beauty & Essentials", image: "https://i.ibb.co/4P2X2S2/image.jpg", desc: "Exquisite body philosophy gift set." },
-  { id: 4, name: "Lip Gloss Tint", price: 450, category: "Beauty & Essentials", image: "https://i.ibb.co/MkhqN0g/image.jpg", desc: "Glossy, moisturizing lip tint." },
-  { id: 5, name: "Star Hair Clips", price: 55, category: "Bags & Accessories", image: "https://i.ibb.co/PzhQJ1S/image.jpg", desc: "Trendy star hair clips." },
-  { id: 6, name: "Luxury Gold Statement Ring", price: 300, category: "Bags & Accessories", image: "https://i.ibb.co/H2D5434/image.jpg", desc: "Beautiful statement gold ring." },
-  { id: 7, name: "Elegant Cross Necklace", price: 450, category: "Bags & Accessories", image: "https://i.ibb.co/q1y9wD1/image.jpg", desc: "Stunning high-quality cross necklace." }
+  { id: 1, name: "1Kg High Quality Organic Peanut Butter", price: 500, category: "Food & Snacks", image: "", desc: "100% natural organic peanut butter." },
+  { id: 2, name: "Ushas Lipgloss + Lip Balm + Charm Set", price: 650, category: "Beauty & Essentials", image: "", desc: "Sparkle lipgloss and moisturizing lip balm set." },
+  { id: 3, name: "Lotion and Body Splash Gift Set", price: 1500, category: "Beauty & Essentials", image: "", desc: "Exquisite body philosophy gift set." },
+  { id: 4, name: "Lip Gloss Tint", price: 450, category: "Beauty & Essentials", image: "", desc: "Glossy, moisturizing lip tint." },
+  { id: 5, name: "Star Hair Clips", price: 55, category: "Bags & Accessories", image: "", desc: "Trendy star hair clips." },
+  { id: 6, name: "Luxury Gold Statement Ring", price: 300, category: "Bags & Accessories", image: "", desc: "Beautiful statement gold ring." },
+  { id: 7, name: "Elegant Cross Necklace", price: 450, category: "Bags & Accessories", image: "", desc: "Stunning high-quality cross necklace." }
 ];
 
 const CATEGORIES = ["All", "Food & Snacks", "Bags & Accessories", "Beauty & Essentials"];
@@ -37,11 +37,11 @@ export default function Home() {
   const [adminPass, setAdminPass] = useState("");
   const [showAdminModal, setShowAdminModal] = useState(false);
 
-  // Form states for Admin adding/editing
+  // Form state for adding/editing products
   const [newProduct, setNewProduct] = useState({ name: "", price: "", category: "Food & Snacks", image: "", desc: "" });
   const [editingId, setEditingId] = useState(null);
 
-  // Load saved products from LocalStorage if available
+  // Load saved products from LocalStorage
   useEffect(() => {
     const saved = localStorage.getItem("yeshi_market_products");
     if (saved) {
@@ -55,11 +55,23 @@ export default function Home() {
     localStorage.setItem("yeshi_market_products", JSON.stringify(updated));
   };
 
+  // Convert uploaded image file to Data URL
+  const handleImageFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewProduct((prev) => ({ ...prev, image: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleAdminLogin = () => {
-    if (adminPass === "1234") { // Your passcode
+    if (adminPass === "1234") {
       setIsAdmin(true);
       setShowAdminModal(false);
-      alert("🔓 Admin mode unlocked! You can now edit products directly on this screen.");
+      alert("🔓 Admin mode unlocked! You can now add and edit products with images.");
     } else {
       alert("❌ Incorrect passcode!");
     }
@@ -119,20 +131,37 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ADMIN PANEL (Only shows when unlocked) */}
+      {/* IN-APP OWNER PANEL WITH FILE UPLOAD */}
       {isAdmin && (
         <div style={{ background: "#eff6ff", border: "2px dashed #2563eb", padding: "16px", borderRadius: "16px", marginBottom: "20px" }}>
           <h3 style={{ margin: "0 0 12px", color: "#1e40af" }}>{editingId ? "✏️ Edit Product" : "➕ Add New Product"}</h3>
-          <form onSubmit={handleAddOrUpdate} style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          
+          <form onSubmit={handleAddOrUpdate} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             <input type="text" placeholder="Product Name" value={newProduct.name} onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} style={{ padding: "8px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
             <input type="number" placeholder="Price (ETB)" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} style={{ padding: "8px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
+            
             <select value={newProduct.category} onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })} style={{ padding: "8px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
               {CATEGORIES.filter(c => c !== "All").map(c => <option key={c} value={c}>{c}</option>)}
             </select>
-            <input type="text" placeholder="Image URL (http://...)" value={newProduct.image} onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })} style={{ padding: "8px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
+
+            {/* Image File Upload Control */}
+            <div style={{ background: "#fff", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
+              <label style={{ display: "block", fontSize: "12px", fontWeight: "bold", color: "#475569", marginBottom: "6px" }}>
+                📷 Upload Photo from Phone / PC:
+              </label>
+              <input type="file" accept="image/*" onChange={handleImageFileUpload} style={{ fontSize: "12px" }} />
+              
+              {newProduct.image && (
+                <div style={{ marginTop: "8px", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <img src={newProduct.image} alt="Preview" style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "6px" }} />
+                  <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: "bold" }}>✓ Photo Ready</span>
+                </div>
+              )}
+            </div>
+
             <textarea placeholder="Description" value={newProduct.desc} onChange={(e) => setNewProduct({ ...newProduct, desc: e.target.value })} style={{ padding: "8px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
             
-            <button type="submit" style={{ background: "#2563eb", color: "#fff", border: "none", padding: "10px", borderRadius: "8px", fontWeight: "bold", cursor: "pointer", marginTop: "4px" }}>
+            <button type="submit" style={{ background: "#2563eb", color: "#fff", border: "none", padding: "10px", borderRadius: "8px", fontWeight: "bold", cursor: "pointer" }}>
               {editingId ? "Save Changes" : "Publish to Shop"}
             </button>
             {editingId && (
@@ -169,11 +198,11 @@ export default function Home() {
 
             {isAdmin ? (
               <div style={{ display: "flex", gap: "6px" }}>
-                <button onClick={() => handleEdit(item)} style={{ background: "#dbeafe", color: "#1d4ed8", border: "none", padding: "6px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold" }}>Edit</button>
-                <button onClick={() => handleDelete(item.id)} style={{ background: "#fee2e2", color: "#ef4444", border: "none", padding: "6px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold" }}>Delete</button>
+                <button onClick={() => handleEdit(item)} style={{ background: "#dbeafe", color: "#1d4ed8", border: "none", padding: "6px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", cursor: "pointer" }}>Edit</button>
+                <button onClick={() => handleDelete(item.id)} style={{ background: "#fee2e2", color: "#ef4444", border: "none", padding: "6px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", cursor: "pointer" }}>Delete</button>
               </div>
             ) : (
-              <button style={{ background: "#2563eb", color: "#fff", border: "none", padding: "8px 12px", borderRadius: "8px", fontWeight: "bold", fontSize: "12px" }}>
+              <button style={{ background: "#2563eb", color: "#fff", border: "none", padding: "8px 12px", borderRadius: "8px", fontWeight: "bold", fontSize: "12px", cursor: "pointer" }}>
                 + Add
               </button>
             )}
@@ -187,10 +216,10 @@ export default function Home() {
           <div style={{ background: "#fff", padding: "20px", borderRadius: "16px", maxWidth: "320px", width: "100%", textAlign: "center" }}>
             <h3 style={{ margin: "0 0 8px" }}>Owner Passcode</h3>
             <p style={{ fontSize: "12px", color: "#64748b", margin: "0 0 12px" }}>Enter pass to manage products directly</p>
-            <input type="password" placeholder="Enter code (default: 1234)" value={adminPass} onChange={(e) => setAdminPass(e.target.value)} style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", marginBottom: "12px", textAlign: "center", boxSizing: "border-box" }} />
+            <input type="password" placeholder="Passcode (default: 1234)" value={adminPass} onChange={(e) => setAdminPass(e.target.value)} style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", marginBottom: "12px", textAlign: "center", boxSizing: "border-box" }} />
             <div style={{ display: "flex", gap: "8px" }}>
-              <button onClick={() => setShowAdminModal(false)} style={{ flex: 1, padding: "10px", border: "none", background: "#f1f5f9" }}>Cancel</button>
-              <button onClick={handleAdminLogin} style={{ flex: 1, padding: "10px", border: "none", background: "#2563eb", color: "#fff", fontWeight: "bold" }}>Unlock</button>
+              <button onClick={() => setShowAdminModal(false)} style={{ flex: 1, padding: "10px", border: "none", background: "#f1f5f9", cursor: "pointer" }}>Cancel</button>
+              <button onClick={handleAdminLogin} style={{ flex: 1, padding: "10px", border: "none", background: "#2563eb", color: "#fff", fontWeight: "bold", cursor: "pointer" }}>Unlock</button>
             </div>
           </div>
         </div>
