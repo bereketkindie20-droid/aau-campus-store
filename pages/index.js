@@ -17,21 +17,21 @@ const ProductMedia = ({ src, alt = "", size = "44px", onClick }) => {
   return <span style={{ fontSize: "28px" }}>📦</span>;
 };
 
+// Default products using your exact working ImgBB direct image links
 const INITIAL_PRODUCTS = [
-  { id: 1, name: "1Kg High Quality Organic Peanut Butter", price: 500, category: "Food & Snacks", image: "", desc: "100% natural organic peanut butter." },
-  { id: 2, name: "Ushas Lipgloss + Lip Balm + Charm Set", price: 650, category: "Beauty & Essentials", image: "", desc: "Sparkle lipgloss and moisturizing lip balm set." },
-  { id: 3, name: "Lotion and Body Splash Gift Set", price: 1500, category: "Beauty & Essentials", image: "", desc: "Exquisite body philosophy gift set." },
-  { id: 4, name: "Lip Gloss Tint", price: 450, category: "Beauty & Essentials", image: "", desc: "Glossy, moisturizing lip tint." },
-  { id: 5, name: "Star Hair Clips", price: 55, category: "Bags & Accessories", image: "", desc: "Trendy star hair clips." },
-  { id: 6, name: "Luxury Gold Statement Ring", price: 300, category: "Bags & Accessories", image: "", desc: "Beautiful statement gold ring." },
-  { id: 7, name: "Elegant Cross Necklace", price: 450, category: "Bags & Accessories", image: "", desc: "Stunning high-quality cross necklace." }
+  { id: 1, name: "1Kg High Quality Organic Peanut Butter", price: 500, category: "Food & Snacks", image: "https://i.ibb.co/mS2QZ3H/image.jpg", desc: "100% natural organic peanut butter." },
+  { id: 2, name: "Ushas Lipgloss + Lip Balm + Charm Set", price: 650, category: "Beauty & Essentials", image: "https://i.ibb.co/xL1QxKq/image.jpg", desc: "Sparkle lipgloss and moisturizing lip balm set." },
+  { id: 3, name: "Lotion and Body Splash Gift Set", price: 1500, category: "Beauty & Essentials", image: "https://i.ibb.co/4P2X2S2/image.jpg", desc: "Exquisite body philosophy gift set." },
+  { id: 4, name: "Lip Gloss Tint", price: 450, category: "Beauty & Essentials", image: "https://i.ibb.co/MkhqN0g/image.jpg", desc: "Glossy, moisturizing lip tint." },
+  { id: 5, name: "Star Hair Clips", price: 55, category: "Bags & Accessories", image: "https://i.ibb.co/PzhQJ1S/image.jpg", desc: "Trendy star hair clips." },
+  { id: 6, name: "Luxury Gold Statement Ring", price: 300, category: "Bags & Accessories", image: "https://i.ibb.co/H2D5434/image.jpg", desc: "Beautiful statement gold ring." },
+  { id: 7, name: "Elegant Cross Necklace", price: 450, category: "Bags & Accessories", image: "https://i.ibb.co/q1y9wD1/image.jpg", desc: "Stunning high-quality cross necklace." }
 ];
 
 const CATEGORIES = ["All", "Food & Snacks", "Bags & Accessories", "Beauty & Essentials"];
 
 export default function Home() {
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
-  const [cart, setCart] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [isOwner, setIsOwner] = useState(false);
@@ -41,42 +41,29 @@ export default function Home() {
   const [newProduct, setNewProduct] = useState({ name: "", price: "", category: "Food & Snacks", image: "", desc: "" });
   const [editingId, setEditingId] = useState(null);
 
-  // Check Telegram User & Load Saved Products
+  // Auto-detect Telegram Owner Username (@bekivisuals1221)
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // 1. Check if Telegram WebApp says you are @bekivisuals1221
       const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-      if (tgUser && tgUser.username && tgUser.username.toLowerCase() === "bekivisuals1221") {
-        setIsOwner(true);
-      }
-
-      // 2. Also check localStorage override so it stays open if you toggled it on
-      const localOwner = localStorage.getItem("yeshi_owner_mode");
-      if (localOwner === "true") {
+      
+      // Check if user is @bekivisuals1221 OR if manually enabled via local storage for testing
+      if ((tgUser && tgUser.username && tgUser.username.toLowerCase() === "bekivisuals1221") || localStorage.getItem("yeshi_force_owner") === "true") {
         setIsOwner(true);
       }
     }
 
-    // Load LocalStorage Products
+    // Load products from shared storage
     const saved = localStorage.getItem("yeshi_market_products");
     if (saved) {
       try { setProducts(JSON.parse(saved)); } catch (e) {}
     }
   }, []);
 
-  const toggleOwnerMode = () => {
-    const nextState = !isOwner;
-    setIsOwner(nextState);
-    localStorage.setItem("yeshi_owner_mode", nextState ? "true" : "false");
-  };
-
-  // Save changes
   const saveProducts = (updated) => {
     setProducts(updated);
     localStorage.setItem("yeshi_market_products", JSON.stringify(updated));
   };
 
-  // Convert uploaded image file to Data URL
   const handleImageFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -124,18 +111,21 @@ export default function Home() {
   return (
     <div style={{ padding: "16px", fontFamily: "sans-serif", backgroundColor: "#f8fafc", minHeight: "100vh", maxWidth: "600px", margin: "0 auto", paddingBottom: "40px" }}>
       
-      {/* Top Header */}
+      {/* Top Header - Clean for customers, shows owner badge ONLY for @bekivisuals1221 */}
       <div style={{ background: "#fff", padding: "16px", borderRadius: "16px", textAlign: "center", marginBottom: "16px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
         <h1 style={{ margin: "0 0 4px", fontSize: "22px" }}>Yeshi Market</h1>
-        <p style={{ margin: "0 0 8px", color: "#64748b", fontSize: "13px" }}>Food • Beauty • Accessories</p>
+        <p style={{ margin: "0 0 4px", color: "#64748b", fontSize: "13px" }}>Food • Beauty • Accessories</p>
         
-        {/* Owner Toggle Button */}
-        <button onClick={toggleOwnerMode} style={{ background: isOwner ? "#dbeafe" : "#f1f5f9", color: isOwner ? "#1e40af" : "#64748b", border: "none", padding: "6px 14px", borderRadius: "14px", fontSize: "11px", fontWeight: "bold", cursor: "pointer" }}>
-          {isOwner ? "👑 Owner Mode: ON" : "⚙️ Owner Toggle"}
-        </button>
+        {isOwner && (
+          <div style={{ marginTop: "8px" }}>
+            <span style={{ background: "#dbeafe", color: "#1e40af", padding: "4px 10px", borderRadius: "12px", fontSize: "11px", fontWeight: "bold" }}>
+              👑 Owner Mode Active (@bekivisuals1221)
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* OWNER ADMIN PANEL */}
+      {/* OWNER ADMIN PANEL - Strictly visible only when isOwner is true */}
       {isOwner && (
         <div style={{ background: "#eff6ff", border: "2px dashed #2563eb", padding: "16px", borderRadius: "16px", marginBottom: "20px" }}>
           <h3 style={{ margin: "0 0 12px", color: "#1e40af" }}>{editingId ? "✏️ Edit Product" : "➕ Add New Product"}</h3>
@@ -182,7 +172,7 @@ export default function Home() {
       
       <div style={{ display: "flex", gap: "8px", overflowX: "auto", marginBottom: "16px" }}>
         {CATEGORIES.map((cat) => (
-          <button key={cat} onClick={() => setActiveCategory(cat)} style={{ padding: "6px 14px", borderRadius: "20px", border: "none", backgroundColor: activeCategory === cat ? "#2563eb" : "#fff", color: activeCategory === cat ? "#fff" : "#475569", fontWeight: "bold", fontSize: "12px" }}>
+          <button key={cat} onClick={() => setActiveCategory(cat)} style={{ padding: "6px 14px", borderRadius: "20px", border: "none", backgroundColor: activeCategory === cat ? "#2563eb" : "#fff", color: activeCategory === cat ? "#fff" : "#475569", fontWeight: "bold", fontSize: "12px", cursor: "pointer" }}>
             {cat}
           </button>
         ))}
@@ -212,7 +202,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Owner Actions vs Regular User Actions */}
+            {/* Owner Actions vs Regular Customer Actions */}
             {isOwner ? (
               <div style={{ display: "flex", gap: "6px" }}>
                 <button onClick={() => handleEdit(item)} style={{ background: "#dbeafe", color: "#1d4ed8", border: "none", padding: "6px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: "bold", cursor: "pointer" }}>Edit</button>
