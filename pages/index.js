@@ -27,97 +27,85 @@ const CATEGORIES = [
   "Beauty & Essentials"
 ];
 
-const POPULAR_TAGS = ["#Food", "#Tech", "#Hoodie", "#Snacks", "#Shoes", "#Perfume", "#Bag"];
+const POPULAR_TAGS = ["#Necklace", "#Lipgloss", "#Lotion", "#Ushas", "#Rings", "#StarClips"];
 
 const PRODUCTS = [
   { 
     id: 1, 
-    name: "Habesha Traditional Meal Combo", 
+    name: "Elegant Crystal & Gold Cross Necklace", 
     price: 450, 
-    category: "Food & Snacks", 
-    image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500", 
+    category: "Bags & Accessories", 
+    image: "✝️", 
     gallery: [
-      { label: "Full Plate", icon: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500", desc: "Fresh traditional platter" },
-      { label: "Side View", icon: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500", desc: "Served hot with fresh ingredients" }
+      { label: "Gold Crystal", icon: "✝️", desc: "Gold chain with sparkling crystal cross pendant" },
+      { label: "Silver Crystal", icon: "🔗", desc: "Silver chain variant with sparkling stones" },
+      { label: "Gold Black Trim", icon: "🖤", desc: "Gold chain with black enamel-accented cross" }
     ],
-    badge: "FRESH", 
-    desc: "Delicious fresh meal combo, prepared and delivered hot." 
+    badge: "POPULAR", 
+    desc: "Stunning high-quality cross necklace available in multiple elegant styles and finishes." 
   },
   { 
     id: 2, 
-    name: "Wireless Noise Cancelling Earbuds", 
-    price: 3200, 
-    category: "Electronics & Tech", 
-    image: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=500", 
+    name: "Gulf Girl Peptide Lip Gloss & Tint", 
+    price: 450, 
+    category: "Beauty & Essentials", 
+    image: "💄", 
     gallery: [
-      { label: "Case & Pods", icon: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=500", desc: "Wireless charging case included" },
-      { label: "Close-up", icon: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500", desc: "Active ANC Microphone" }
+      { label: "Shade Collection", icon: "💄", desc: "Assorted nourishing peptide lip tint shades" },
+      { label: "Display Box", icon: "📦", desc: "Full box shade display variety" }
     ],
-    badge: "HOT", 
-    desc: "Deep bass, crystal clear mic, and 24h total playback battery life." 
+    badge: "NEW", 
+    desc: "Glossy, moisturizing lip tint that blends easily for soft, nourished pigmented lips." 
   },
   { 
     id: 3, 
-    name: "Oversized Streetwear Hoodie", 
-    price: 2200, 
-    category: "Men's Fashion", 
-    image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500", 
+    name: "Golden Royal / Red Vicuna Lotion & Body Mist Set", 
+    price: 1500, 
+    category: "Beauty & Essentials", 
+    image: "✨", 
     gallery: [
-      { label: "Front Fit", icon: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500", desc: "Heavyweight fleece cotton blend" },
-      { label: "Back View", icon: "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?w=500", desc: "Relaxed streetwear cut" }
+      { label: "Golden Royal Salute", icon: "✨", desc: "Fragrance Lotion (236g) & Body Mist (250ml) set" },
+      { label: "Red Vicuna Merlot", icon: "🌹", desc: "Merlot fragrance lotion & body mist gift box" }
     ],
-    badge: "TRENDING", 
-    desc: "Super soft inner fleece lining, ideal for cool weather." 
+    badge: "LUXURY", 
+    desc: "Exquisite 2-piece body philosophy gift set featuring long-lasting luxury fragrance mist and lotion." 
   },
   { 
     id: 4, 
-    name: "Casual Floral Summer Dress", 
-    price: 1800, 
-    category: "Women's Fashion", 
-    image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500", 
+    name: "Ushas Lipgloss + Lip Balm + Fluffy Charm Set", 
+    price: 650, 
+    category: "Beauty & Essentials", 
+    image: "🧸", 
     gallery: [
-      { label: "Full Style", icon: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500", desc: "Lightweight breathable fabric" },
-      { label: "Close-up", icon: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=500", desc: "Elegant floral pattern" }
+      { label: "Purple Monster", icon: "🟣", desc: "Lipgloss, brightening lip balm & fluffy purple monster charm" },
+      { label: "Pink Fox Charm", icon: "🦊", desc: "Lipgloss, brightening lip balm & cute pink fox charm" }
     ],
-    desc: "Comfortable and stylish daily wear dress." 
+    badge: "BESTSELLER", 
+    desc: "Ushas sparkle lipgloss and moisturizing lip balm set attached to a cute collectible bag charm." 
   },
   { 
     id: 5, 
-    name: "Classic White Campus Sneakers", 
-    price: 3500, 
-    category: "Shoes & Footwear", 
-    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500", 
+    name: "Luxury Gold Ring Collection", 
+    price: 300, 
+    category: "Bags & Accessories", 
+    image: "💍", 
     gallery: [
-      { label: "Side Profile", icon: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500", desc: "Durable anti-slip rubber sole" },
-      { label: "Top View", icon: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500", desc: "Cushioned soft insole" }
+      { label: "Ring Tray", icon: "💍", desc: "Assorted premium gold-plated ring collection in various sizes" }
     ],
-    badge: "POPULAR", 
-    desc: "Lightweight sneakers built for daily walking." 
+    badge: "TRENDING", 
+    desc: "Beautiful statement gold rings in various sizes and unique artistic patterns." 
   },
   { 
     id: 6, 
-    name: "Canvas Laptop Tote & Travel Bag", 
-    price: 1200, 
+    name: "Star Hair Clips (Price per piece)", 
+    price: 55, 
     category: "Bags & Accessories", 
-    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500", 
+    image: "⭐", 
     gallery: [
-      { label: "Front View", icon: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500", desc: "Fits up to 15-inch laptop" },
-      { label: "Straps Detail", icon: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500", desc: "Reinforced shoulder straps" }
+      { label: "Assorted Colors", icon: "⭐", desc: "Trendy star-shaped hair clips in multiple cute colors" }
     ],
-    desc: "Heavy canvas material with zipper compartments for books and tech." 
-  },
-  { 
-    id: 7, 
-    name: "Fresh Luxury Perfume (50ml)", 
-    price: 1500, 
-    category: "Beauty & Essentials", 
-    image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500", 
-    gallery: [
-      { label: "Bottle Front", icon: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500", desc: "Long-lasting citrus and woody notes" },
-      { label: "Atomizer Spray", icon: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500", desc: "Fine-mist diffusion spray" }
-    ],
-    badge: "BESTSELLER", 
-    desc: "Fresh long-lasting fragrance crafted for everyday confidence." 
+    badge: "HOT", 
+    desc: "Trendy star-shaped hair clips available in various cute colors (Price per piece)." 
   }
 ];
 
@@ -238,7 +226,7 @@ export default function Home() {
       {/* Header */}
       <div style={{ textAlign: "center", marginBottom: "16px", background: "#fff", padding: "16px", borderRadius: "16px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
         <h1 style={{ color: "#0f172a", margin: "0 0 4px 0", fontSize: "22px" }}>Yeshi Market</h1>
-        <p style={{ color: "#64748b", margin: "0 0 12px 0", fontSize: "13px" }}>Food • Tech • Fashion • Daily Essentials</p>
+        <p style={{ color: "#64748b", margin: "0 0 12px 0", fontSize: "13px" }}>Accessories • Beauty • Daily Essentials</p>
         <a href="https://t.me/bekivisuals1221" target="_blank" rel="noreferrer" style={{ backgroundColor: "#0088cc", color: "#fff", padding: "8px 16px", borderRadius: "20px", textDecoration: "none", fontSize: "12px", fontWeight: "bold", display: "inline-block" }}>
           💬 Support: @bekivisuals1221
         </a>
@@ -281,11 +269,14 @@ export default function Home() {
         {filteredProducts.map((item) => (
           <div key={item.id} style={{ background: "#fff", padding: "14px", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div onClick={() => openProductDrawer(item)} style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer", flex: 1 }}>
-              <div style={{ background: "#f8fafc", padding: "6px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <ProductMedia src={item.image} alt={item.name} size="44px" />
+              <div style={{ background: "#f8fafc", padding: "10px", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <ProductMedia src={item.image} alt={item.name} size="36px" />
               </div>
               <div>
-                <h4 style={{ margin: "0", fontSize: "14px", color: "#0f172a" }}>{item.name}</h4>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <h4 style={{ margin: "0", fontSize: "14px", color: "#0f172a" }}>{item.name}</h4>
+                  {item.badge && <span style={{ fontSize: "9px", fontWeight: "bold", background: "#ef4444", color: "#fff", padding: "1px 5px", borderRadius: "4px" }}>{item.badge}</span>}
+                </div>
                 <p style={{ color: "#2563eb", fontWeight: "bold", margin: "4px 0 0", fontSize: "14px" }}>{item.price} ETB</p>
               </div>
             </div>
@@ -304,11 +295,29 @@ export default function Home() {
               <span style={{ fontSize: "12px", fontWeight: "bold", background: "#eff6ff", color: "#2563eb", padding: "4px 10px", borderRadius: "12px" }}>{selectedProduct.category}</span>
               <button onClick={() => setSelectedProduct(null)} style={{ background: "#f1f5f9", border: "none", borderRadius: "50%", width: "30px", height: "30px", cursor: "pointer" }}>✕</button>
             </div>
+            
             <div style={{ textAlign: "center", padding: "16px", backgroundColor: "#f8fafc", borderRadius: "16px", marginBottom: "12px" }}>
-              <ProductMedia src={activeAngle?.icon || selectedProduct.image} alt={selectedProduct.name} size="100px" />
+              <ProductMedia src={activeAngle?.icon || selectedProduct.image} alt={selectedProduct.name} size="80px" />
               <h2 style={{ margin: "8px 0 2px", fontSize: "18px" }}>{selectedProduct.name}</h2>
+              <p style={{ fontSize: "12px", color: "#64748b", margin: "0 0 6px" }}>Variant: <strong>{activeAngle?.label}</strong> — {activeAngle?.desc}</p>
               <p style={{ fontSize: "20px", fontWeight: "bold", color: "#2563eb", margin: 0 }}>{selectedProduct.price} ETB</p>
             </div>
+
+            {/* Gallery buttons for color/style variants */}
+            {selectedProduct.gallery && selectedProduct.gallery.length > 1 && (
+              <div style={{ marginBottom: "16px" }}>
+                <span style={{ fontSize: "11px", fontWeight: "bold", color: "#64748b", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>Select Style / Color Option:</span>
+                <div style={{ display: "grid", gridTemplateColumns: `repeat(${selectedProduct.gallery.length}, 1fr)`, gap: "8px" }}>
+                  {selectedProduct.gallery.map((g, idx) => (
+                    <button key={idx} onClick={() => setActiveAngleIndex(idx)} style={{ padding: "8px 4px", borderRadius: "10px", border: activeAngleIndex === idx ? "2px solid #2563eb" : "1px solid #cbd5e1", backgroundColor: activeAngleIndex === idx ? "#eff6ff" : "#fff", cursor: "pointer", textAlign: "center" }}>
+                      <span style={{ fontSize: "16px" }}>{g.icon}</span>
+                      <div style={{ fontSize: "10px", fontWeight: "bold", marginTop: "2px" }}>{g.label}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <p style={{ fontSize: "13px", color: "#475569", margin: "0 0 16px" }}>{selectedProduct.desc}</p>
             <button onClick={() => { addToCart(selectedProduct, detailQty); setSelectedProduct(null); }} style={{ width: "100%", backgroundColor: "#2563eb", color: "#fff", border: "none", padding: "14px", borderRadius: "12px", fontWeight: "bold", fontSize: "15px", cursor: "pointer" }}>
               Add to Cart • {selectedProduct.price * detailQty} ETB
