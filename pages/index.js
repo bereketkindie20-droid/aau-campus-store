@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-// Live Cloud Database Configuration
+// Cloud Database Credentials
 const JSONBIN_BIN_ID = "66f42b3be41b4d34e437b01d";
 const JSONBIN_API_KEY = "$2a$10$RGGe.zR74MynrbUiY2F8tON1KQc5br2kxvm6l2UjQcq98L12Cy98i";
 
@@ -38,7 +38,6 @@ const CATEGORIES = ["All", "Food & Snacks", "Bags & Accessories", "Beauty & Esse
 
 export default function Home() {
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
-  const [cart, setCart] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [isOwner, setIsOwner] = useState(false);
@@ -65,7 +64,9 @@ export default function Home() {
   const fetchCloudProducts = async () => {
     try {
       const res = await fetch(JSONBIN_READ_URL, {
-        headers: { "X-Master-Key": JSONBIN_API_KEY }
+        headers: {
+          "X-Master-Key": JSONBIN_API_KEY
+        }
       });
       const data = await res.json();
       if (data && data.record && Array.isArray(data.record) && data.record.length > 0) {
@@ -79,8 +80,9 @@ export default function Home() {
   const saveProductsToCloud = async (updatedList) => {
     setProducts(updatedList);
     setIsSaving(true);
+
     try {
-      const res = await fetch(JSONBIN_WRITE_URL, {
+      const response = await fetch(JSONBIN_WRITE_URL, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -89,19 +91,20 @@ export default function Home() {
         body: JSON.stringify(updatedList)
       });
 
-      if (res.ok) {
+      if (response.ok) {
         alert("✅ Product updated live! All customers will see this change instantly.");
       } else {
-        alert("⚠️ Cloud update failed. Check connection.");
+        const errData = await response.json();
+        alert(`⚠️ Cloud update failed: ${errData.message || 'Check Master Key'}`);
       }
     } catch (e) {
-      alert("❌ Error saving to cloud database.");
+      alert("❌ Error saving to cloud database. Please try again.");
     } finally {
       setIsSaving(false);
     }
   };
 
-  // Compress & convert device photo upload
+  // Compress & convert uploaded image file
   const handleImageFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -120,6 +123,7 @@ export default function Home() {
           const ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
+          // Standard compressed JPEG string
           const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
           setNewProduct((prev) => ({ ...prev, image: compressedBase64 }));
         };
