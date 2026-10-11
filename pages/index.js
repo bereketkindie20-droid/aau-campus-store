@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-// Helper component to display either an image URL or an emoji fallback safely
+// Helper component to safely render images or fallback to emoji icons
 const ProductMedia = ({ src, alt = '', size = '32px' }) => {
   const [hasError, setHasError] = useState(false);
 
@@ -14,238 +14,114 @@ const ProductMedia = ({ src, alt = '', size = '32px' }) => {
       />
     );
   }
-  return <span style={{ fontSize: size }}>{src && !src.startsWith('/') && !src.startsWith('http') ? src : '📱'}</span>;
+  return <span style={{ fontSize: size }}>{src && !src.startsWith('/') && !src.startsWith('http') ? src : '📦'}</span>;
 };
 
+// Simplified 7-Category Structure
+const CATEGORIES = [
+  'All', 
+  'Food & Snacks', 
+  'Electronics & Tech', 
+  'Men’s Fashion', 
+  'Women’s Fashion', 
+  'Shoes & Footwear', 
+  'Bags & Accessories', 
+  'Beauty & Essentials'
+];
+
+const POPULAR_TAGS = ['#Food', '#Tech', '#Hoodie', '#Snacks', '#Shoes', '#Perfume', '#Bag'];
+
 const PRODUCTS = [
-  // Phones & Audio
   { 
     id: 1, 
-    name: 'Smart Phone 128GB', 
-    price: 28000, 
-    category: 'Phones & Audio', 
-    image: '📱', 
+    name: 'Habesha Traditional Meal Combo', 
+    price: 450, 
+    category: 'Food & Snacks', 
+    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500', 
     gallery: [
-      { label: 'Front', icon: '📱', desc: '6.7-inch OLED Super Retina HD Display' },
-      { label: 'Camera', icon: '📸', desc: 'Triple Lens Matrix 48MP AI Camera System' },
-      { label: 'Back', icon: '📲', desc: 'Matte glass back finish with anti-fingerprint coating' }
+      { label: 'Full Plate', icon: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500', desc: 'Freshly prepared traditional platter' },
+      { label: 'Side View', icon: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500', desc: 'Served hot with organic ingredients' }
     ],
-    badge: 'POPULAR', 
-    desc: '128GB storage, crisp HD display, long battery life. Perfect for university lectures and media consumption.' 
+    badge: 'FRESH', 
+    desc: 'Delicious fresh meal combo, prepared and delivered hot to your doorstep.' 
   },
   { 
     id: 2, 
-    name: 'AirPods Pro (Noise Cancelling)', 
+    name: 'Wireless Noise Cancelling Earbuds', 
     price: 3200, 
-    category: 'Phones & Audio', 
-    image: '🎧', 
+    category: 'Electronics & Tech', 
+    image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=500', 
     gallery: [
-      { label: 'Case & Pods', icon: '🎧', desc: 'Wireless MagSafe charging case with earbuds' },
-      { label: 'Ear Tips', icon: '👂', desc: 'Soft silicone noise-isolating ear tips (S/M/L included)' },
-      { label: 'Close-up', icon: '🔍', desc: 'Active ANC Microphone mesh & touch sensor stem' }
+      { label: 'Case & Pods', icon: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=500', desc: 'Wireless charging case included' },
+      { label: 'Close-up', icon: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500', desc: 'Active ANC Microphone' }
     ],
     badge: 'HOT', 
-    desc: 'Active noise cancellation, fast Bluetooth pairing, crystal clear microphone for audio calls.' 
+    desc: 'Deep bass, crystal clear mic, and 24h total playback battery life.' 
   },
   { 
     id: 3, 
-    name: 'Wireless Over-Ear Headset', 
-    price: 1800, 
-    category: 'Phones & Audio', 
-    image: '🎧', 
+    name: 'Oversized Streetwear Hoodie', 
+    price: 2200, 
+    category: 'Men’s Fashion', 
+    image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500', 
     gallery: [
-      { label: 'Front View', icon: '🎧', desc: 'Ergonomic adjustable headband with memory foam' },
-      { label: 'Earcup Controls', icon: '🎛️', desc: 'Tactile volume dial, bass boost & ANC switch' },
-      { label: 'Folded Angle', icon: '🎒', desc: 'Swivel earcups fold flat for easy backpack storage' }
+      { label: 'Front Fit', icon: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500', desc: 'Heavyweight fleece cotton blend' },
+      { label: 'Back View', icon: 'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?w=500', desc: 'Relaxed streetwear aesthetic cut' }
     ],
-    desc: 'Deep bass, soft cushion earmuffs, built-in mic, up to 30 hours of continuous playback.' 
+    badge: 'TRENDING', 
+    desc: 'Super soft inner fleece lining, ideal for cool campus weather.' 
   },
   { 
     id: 4, 
-    name: 'Fast Charger Cable + Adapter', 
-    price: 550, 
-    category: 'Phones & Audio', 
-    image: '🔌', 
+    name: 'Casual Floral Summer Dress', 
+    price: 1800, 
+    category: 'Women’s Fashion', 
+    image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500', 
     gallery: [
-      { label: 'Full Kit', icon: '🔌', desc: 'PD 20W Wall Plug + 1m Braided Fast Cable' },
-      { label: 'Plug Detail', icon: '⚡', desc: 'Smart IC chip protection against overheating' },
-      { label: 'Reinforced Cable', icon: '🧶', desc: 'Tangle-free nylon braided stress relief neck' }
+      { label: 'Full Style', icon: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500', desc: 'Lightweight breathable fabric' },
+      { label: 'Close-up', icon: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=500', desc: 'Elegant floral pattern design' }
     ],
-    desc: 'PD 20W Fast Charging kit for iPhones and Android smartphones. High durability braided wire.' 
+    desc: 'Comfortable and stylish daily wear dress for any occasion.' 
   },
-
-  // Tech & Wearables
   { 
     id: 5, 
-    name: 'Smart Watch Series 8', 
-    price: 2500, 
-    category: 'Tech & Wearables', 
-    image: '⌚', 
+    name: 'Classic White Campus Sneakers', 
+    price: 3500, 
+    category: 'Shoes & Footwear', 
+    image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500', 
     gallery: [
-      { label: 'Dial Front', icon: '⌚', desc: 'Always-On Retina display with customizable watch faces' },
-      { label: 'Strap Side', icon: '📐', desc: 'Quick-release comfortable silicone sport band' },
-      { label: 'Sensor Back', icon: '🩺', desc: 'Precision optical heart rate and SpO2 sensors' }
+      { label: 'Side Profile', icon: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500', desc: 'Durable anti-slip rubber sole' },
+      { label: 'Top View', icon: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500', desc: 'Cushioned soft breathable insole' }
     ],
-    badge: 'NEW', 
-    desc: 'Heart rate tracker, fitness modes, notification mirror, stylish metallic dial with silicone band.' 
+    badge: 'POPULAR', 
+    desc: 'Lightweight sneakers built for walking across campus all day long.' 
   },
   { 
     id: 6, 
-    name: '20,000mAh Heavy Duty Power Bank', 
-    price: 1800, 
-    category: 'Tech & Wearables', 
-    image: '🔋', 
+    name: 'Canvas Laptop Tote & Travel Bag', 
+    price: 1200, 
+    category: 'Bags & Accessories', 
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500', 
     gallery: [
-      { label: 'Front View', icon: '🔋', desc: 'High density polymer battery cell casing' },
-      { label: 'Port Layout', icon: '🔌', desc: 'Dual USB-A output + Type-C Power Delivery port' },
-      { label: 'LED Screen', icon: '💡', desc: 'Digital battery percentage power indicator display' }
+      { label: 'Front View', icon: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500', desc: 'Spacious compartment fits up to 15-inch laptop' },
+      { label: 'Straps Detail', icon: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500', desc: 'Reinforced shoulder straps for heavy loads' }
     ],
-    badge: 'HOT', 
-    desc: 'Dual USB ports, LED battery indicator, heavy-duty capacity to charge phone up to 5-6 times.' 
+    desc: 'Heavy canvas material with secure zipper compartments for books and tech gear.' 
   },
   { 
     id: 7, 
-    name: 'USB-C Multi-Port Laptop Hub', 
-    price: 1200, 
-    category: 'Tech & Wearables', 
-    image: '💻', 
+    name: 'Fresh Luxury Perfume (50ml)', 
+    price: 1500, 
+    category: 'Beauty & Essentials', 
+    image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500', 
     gallery: [
-      { label: 'Hub Angle', icon: '💻', desc: 'Sleek aluminum alloy heat-dissipating shell' },
-      { label: 'Ports View', icon: '🔌', desc: '4K HDMI, 3x USB 3.0, SD & MicroSD slot' },
-      { label: 'Plug Cable', icon: '🧵', desc: 'Short reinforced USB-C input tail' }
+      { label: 'Bottle Front', icon: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500', desc: 'Long-lasting citrus and woody notes' },
+      { label: 'Atomizer Spray', icon: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=500', desc: 'Fine-mist diffusion spray bottle' }
     ],
-    desc: 'Adds HDMI 4K output, 3x USB 3.0 ports, SD card reader, and Type-C passthrough charging.' 
-  },
-
-  // Clothing & Apparel
-  { 
-    id: 8, 
-    name: 'Oversized Streetwear Hoodie / Jacket', 
-    price: 2200, 
-    category: 'Clothing & Apparel', 
-    image: '🧥', 
-    gallery: [
-      { label: 'Front Style', icon: '🧥', desc: 'Relaxed oversized aesthetic cut with front pocket' },
-      { label: 'Back Design', icon: '👕', desc: 'Clean minimalist back panel stitching' },
-      { label: 'Fabric Texture', icon: '🧶', desc: 'Heavyweight 350GSM cotton fleece interior' }
-    ],
-    badge: 'TRENDING', 
-    desc: 'Ultra-soft fleece inner lining, relaxed fit streetwear style, suitable for cool campus weather.' 
-  },
-  { 
-    id: 9, 
-    name: 'Wide-Leg Baggy Jeans (Blue)', 
-    price: 1800, 
-    category: 'Clothing & Apparel', 
-    image: '👖', 
-    gallery: [
-      { label: 'Front Fit', icon: '👖', desc: 'Wide-leg relaxed fit with deep pockets' },
-      { label: 'Back Pockets', icon: '🧵', desc: 'Reinforced back pockets with custom stitching' },
-      { label: 'Denim Close-up', icon: '🔍', desc: '100% durable washed denim cotton fabric' }
-    ],
-    desc: 'High quality denim, wide-leg aesthetic fit, durable stitching for daily campus wear.' 
-  },
-  { 
-    id: 10, 
-    name: 'Campus Sneakers / Running Shoes', 
-    price: 3500, 
-    category: 'Clothing & Apparel', 
-    image: '👟', 
-    gallery: [
-      { label: 'Side Profile', icon: '👟', desc: 'Sleek athletic silhouette with dynamic line trim' },
-      { label: 'Sole Tread', icon: '🦶', desc: 'High-traction slip resistant rubber outsole' },
-      { label: 'Mesh Close-up', icon: '💨', desc: 'Ultra-breathable honeycomb knitted mesh upper' }
-    ],
-    desc: 'Lightweight breathable mesh material, cushioned sole for comfortable long walk across campus.' 
-  },
-
-  // Footwear & Style Accessories
-  { 
-    id: 11, 
-    name: 'Casual Canvas Shoes', 
-    price: 2400, 
-    category: 'Footwear & Style', 
-    image: '👟', 
-    gallery: [
-      { label: 'Top View', icon: '👟', desc: 'Classic lace-up canvas design with metal eyelets' },
-      { label: 'Heel Back', icon: '👟', desc: 'Reinforced heel cap for shape retention' },
-      { label: 'Sole Cushion', icon: '👣', desc: 'Vulcanized rubber sole with comfortable inner arch' }
-    ],
-    desc: 'Classic canvas style, vulcanized rubber sole, matches all casual streetwear outfits.' 
-  },
-  { 
-    id: 12, 
-    name: 'Long-Lasting Fresh Campus Perfume (50ml)', 
-    price: 1100, 
-    category: 'Footwear & Style', 
-    image: '✨', 
-    gallery: [
-      { label: 'Bottle Front', icon: '✨', desc: 'Minimalist glass atomizer bottle with metallic cap' },
-      { label: 'Spray Nozzle', icon: '💦', desc: 'Fine-mist diffusion spray mechanism' },
-      { label: 'Packaging', icon: '📦', desc: 'Protective embossed presentation box' }
-    ],
-    desc: 'Fresh citrus & woody fragrance notes. Long lasting scent designed for active student day.' 
-  },
-  { 
-    id: 13, 
-    name: 'Canvas Tote Bag for Lectures', 
-    price: 650, 
-    category: 'Footwear & Style', 
-    image: '🛍️', 
-    gallery: [
-      { label: 'Full Bag', icon: '🛍️', desc: 'Spacious main compartment holds 15" laptop & binders' },
-      { label: 'Inner Zipper', icon: '👛', desc: 'Secure internal pocket for keys, cards & phone' },
-      { label: 'Strap Detail', icon: '🧵', desc: 'Double-stitched high durability shoulder straps' }
-    ],
-    desc: 'Heavy canvas material, holds laptops, books, water bottles, with inner zipper pocket.' 
-  },
-
-  // Dorm & Academic Essentials
-  { 
-    id: 14, 
-    name: 'Dorm LED Desk Study Lamp', 
-    price: 850, 
-    category: 'Dorm Essentials', 
-    image: '💡', 
-    gallery: [
-      { label: 'Standing Lamp', icon: '💡', desc: 'Flexible 360-degree gooseneck arm design' },
-      { label: 'Touch Base', icon: '🎛️', desc: '3 Color temperature modes & touch dimming' },
-      { label: 'Charging Port', icon: '🔌', desc: 'USB rechargeable internal battery & power port' }
-    ],
-    desc: 'Touch controls, 3 lighting modes (warm/white/mixed), rechargeable built-in battery.' 
-  },
-  { 
-    id: 15, 
-    name: 'Compact Electric Kettle 1.5L', 
-    price: 1400, 
-    category: 'Dorm Essentials', 
-    image: '🫖', 
-    gallery: [
-      { label: 'Front Exterior', icon: '🫖', desc: 'Cool-touch outer body with ergonomic handle' },
-      { label: 'Interior Stainless', icon: '✨', desc: '100% Food-grade 304 stainless steel seamless liner' },
-      { label: 'Power Base', icon: '🔌', desc: '360-degree swivel cordless heating base' }
-    ],
-    badge: 'MUST HAVE', 
-    desc: 'Fast boiling stainless steel interior, auto shut-off safety, ideal for dorm instant coffee & noodles.' 
-  },
-  { 
-    id: 16, 
-    name: 'A4 Notebook & Pen Bundle', 
-    price: 300, 
-    category: 'Dorm Essentials', 
-    image: '📝', 
-    gallery: [
-      { label: 'Bundle Kit', icon: '📝', desc: '3x Grid notebooks + 5x Smooth gel ink pens' },
-      { label: 'Page Layout', icon: '📄', desc: '100GSM bleed-resistant cream graph paper' },
-      { label: 'Gel Pens', icon: '🖊️', desc: '0.5mm quick-dry smudge-free black gel pens' }
-    ],
-    desc: '3x Grid line notebooks (200 pages each) + pack of 5 smooth gel pens.' 
-  },
+    badge: 'BESTSELLER', 
+    desc: 'Fresh long-lasting fragrance crafted for everyday confidence.' 
+  }
 ];
-
-const CATEGORIES = ['All', 'Phones & Audio', 'Tech & Wearables', 'Clothing & Apparel', 'Footwear & Style', 'Dorm Essentials'];
-
-const POPULAR_TAGS = ['#PowerBank', '#Hoodie', '#AirPods', '#Kettle', '#Perfume', '#Charger', '#Shoes'];
 
 const PAYMENT_METHODS = [
   { id: 'telebirr', name: 'Telebirr', icon: '📱' },
@@ -399,7 +275,7 @@ export default function Home() {
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '16px', background: '#fff', padding: '16px', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
         <h1 style={{ color: '#0f172a', margin: '0 0 4px 0', fontSize: '22px' }}>Yeshi Market</h1>
-        <p style={{ color: '#64748b', margin: '0 0 12px 0', fontSize: '13px' }}>Tech • Fashion • Apparel • Daily Essentials</p>
+        <p style={{ color: '#64748b', margin: '0 0 12px 0', fontSize: '13px' }}>Food • Tech • Fashion • Daily Essentials</p>
         <a href="https://t.me/bekivisuals1221" target="_blank" rel="noreferrer" style={{ backgroundColor: '#0088cc', color: '#fff', padding: '8px 16px', borderRadius: '20px', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', display: 'inline-block' }}>
           💬 Support: @bekivisuals1221
         </a>
@@ -441,7 +317,7 @@ export default function Home() {
         )}
       </div>
 
-      {/* Campus Hashtag Badges */}
+      {/* Hashtag Badges */}
       <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '10px', marginBottom: '12px', WebkitOverflowScrolling: 'touch' }}>
         {POPULAR_TAGS.map((tag) => {
           const isActive = searchQuery.toLowerCase() === tag.replace('#', '').toLowerCase();
@@ -491,9 +367,9 @@ export default function Home() {
                 onClick={() => openProductDrawer(item)} 
                 style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', flex: 1 }}
               >
-                <div style={{ background: '#f8fafc', padding: '10px', borderRadius: '10px', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <ProductMedia src={item.image} alt={item.name} size="36px" />
-                  <span style={{ position: 'absolute', bottom: '2px', right: '2px', fontSize: '10px', backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: '4px', padding: '1px 3px' }}>🔍</span>
+                <div style={{ background: '#f8fafc', padding: '6px', borderRadius: '10px', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '48px', minHeight: '48px' }}>
+                  <ProductMedia src={item.image} alt={item.name} size="44px" />
+                  <span style={{ position: 'absolute', bottom: '1px', right: '1px', fontSize: '9px', backgroundColor: 'rgba(255,255,255,0.9)', borderRadius: '4px', padding: '1px 2px' }}>🔍</span>
                 </div>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -581,7 +457,7 @@ export default function Home() {
                 onClick={() => setIsZoomOpen(true)}
                 style={{ cursor: 'zoom-in', padding: '12px 0', display: 'flex', justifyContent: 'center' }}
               >
-                <ProductMedia src={activeAngle?.icon || selectedProduct.image} alt={selectedProduct.name} size="80px" />
+                <ProductMedia src={activeAngle?.icon || selectedProduct.image} alt={selectedProduct.name} size="120px" />
               </div>
 
               <h2 style={{ margin: '8px 0 2px', fontSize: '18px', color: '#0f172a' }}>{selectedProduct.name}</h2>
@@ -615,7 +491,7 @@ export default function Home() {
                         alignItems: 'center'
                       }}
                     >
-                      <ProductMedia src={item.icon} alt={item.label} size="24px" />
+                      <ProductMedia src={item.icon} alt={item.label} size="32px" />
                       <div style={{ fontSize: '10px', fontWeight: 'bold', color: activeAngleIndex === idx ? '#1d4ed8' : '#475569', marginTop: '4px' }}>
                         {item.label}
                       </div>
@@ -713,7 +589,7 @@ export default function Home() {
               userSelect: 'none',
               filter: 'drop-shadow(0 15px 25px rgba(0,0,0,0.5))'
             }}>
-              <ProductMedia src={activeAngle?.icon || selectedProduct.image} alt={selectedProduct.name} size="160px" />
+              <ProductMedia src={activeAngle?.icon || selectedProduct.image} alt={selectedProduct.name} size="220px" />
             </div>
           </div>
 
@@ -777,7 +653,7 @@ export default function Home() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '16px' }}>
               <input type="text" placeholder="Full Name" value={studentInfo.name} onChange={(e) => setStudentInfo({ ...studentInfo, name: e.target.value })} style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none' }} />
               <input type="text" placeholder="Phone Number / Telegram" value={studentInfo.contact} onChange={(e) => setStudentInfo({ ...studentInfo, contact: e.target.value })} style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none' }} />
-              <input type="text" placeholder="Delivery Address / Campus Location" value={studentInfo.campus} onChange={(e) => setStudentInfo({ ...studentInfo, campus: e.target.value })} style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none' }} />
+              <input type="text" placeholder="Delivery Address / Location" value={studentInfo.campus} onChange={(e) => setStudentInfo({ ...studentInfo, campus: e.target.value })} style={{ padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', outline: 'none' }} />
 
               {/* Payment Method Selector */}
               <div style={{ marginTop: '6px' }}>
@@ -887,13 +763,3 @@ export default function Home() {
                 Edit Order
               </button>
               <button onClick={handleFinalCheckout} style={{ flex: 2, padding: '12px', borderRadius: '8px', border: 'none', background: '#16a34a', color: '#fff', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer', boxShadow: '0 2px 4px rgba(22,163,74,0.2)' }}>
-                Confirm & Open Telegram ✈️
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-    </div>
-  );
-}
