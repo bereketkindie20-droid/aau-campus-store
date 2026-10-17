@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-// Your Supabase Configuration
+// Supabase Configuration
 const SUPABASE_URL = "https://gisizxadtwdxydcpemli.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_Vt__Fg-loooyMIuVbbRmBw_aTn_SM6j";
 
@@ -29,25 +29,17 @@ export default function Home() {
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      // 1. Secret URL parameter (?admin=Yeshi@1221)
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get("admin") === "Yeshi@1221") {
-        setIsOwner(true);
-      }
+    // 1. Auto-detect inside Telegram App
+    if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
 
-      // 2. Telegram WebApp User credentials
-      if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.ready();
-        const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
+      if (tgUser) {
+        const username = (tgUser.username || "").toLowerCase();
+        const phone = (tgUser.phone_number || "").replace(/[^0-9]/g, "");
 
-        if (tgUser) {
-          const username = (tgUser.username || "").toLowerCase();
-          const phone = (tgUser.phone_number || "").replace(/[^0-9]/g, "");
-
-          if (username === "bekivisuals1221" || phone.includes("950239368")) {
-            setIsOwner(true);
-          }
+        if (username === "bekivisuals1221" || phone.includes("950239368")) {
+          setIsOwner(true);
         }
       }
     }
@@ -55,10 +47,8 @@ export default function Home() {
     fetchProductsFromSupabase();
   }, []);
 
-  // Fetch live products from Supabase database table
+  // Fetch live products from Supabase
   const fetchProductsFromSupabase = async () => {
-    if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY === "PASTE_YOUR_SUPABASE_ANON_KEY_HERE") return;
-
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/products?select=*`, {
         headers: {
@@ -75,18 +65,26 @@ export default function Home() {
     }
   };
 
+  // Toggle Owner Mode via Passcode Button
+  const handleOwnerLoginToggle = () => {
+    if (isOwner) {
+      setIsOwner(false);
+      alert("🔒 Logged out of Owner Mode.");
+    } else {
+      const pass = prompt("🔑 Enter Owner Passcode:");
+      if (pass === "1221" || pass === "Yeshi@1221") {
+        setIsOwner(true);
+        alert("👑 Owner Mode Activated! Edit buttons are now visible.");
+      } else if (pass !== null) {
+        alert("❌ Incorrect passcode.");
+      }
+    }
+  };
+
   // Upload photo file directly to Supabase Storage Bucket
   const handleImageFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY === "PASTE_YOUR_SUPABASE_ANON_KEY_HERE") {
-      // Local Base64 preview fallback if key not set
-      const reader = new FileReader();
-      reader.onloadend = () => setNewProduct((prev) => ({ ...prev, image: reader.result }));
-      reader.readAsDataURL(file);
-      return;
-    }
 
     setIsSaving(true);
     const fileName = `product_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, "_")}`;
@@ -105,9 +103,12 @@ export default function Home() {
       if (res.ok) {
         const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/products/${fileName}`;
         setNewProduct((prev) => ({ ...prev, image: publicUrl }));
-        alert("📷 Photo uploaded to Supabase cloud storage!");
+        alert("📷 Photo uploaded to Supabase!");
       } else {
-        alert("⚠️ Photo upload failed. Ensure 'products' bucket is created as PUBLIC in Supabase Storage.");
+        // Base64 fallback if bucket fails
+        const reader = new FileReader();
+        reader.onloadend = () => setNewProduct((prev) => ({ ...prev, image: reader.result }));
+        reader.readAsDataURL(file);
       }
     } catch (e) {
       alert("Error uploading image.");
@@ -131,7 +132,7 @@ export default function Home() {
 
     setProducts(updatedList);
     setNewProduct({ name: "", price: "", category: "Food & Snacks", image: "", desc: "" });
-    alert("✅ Store updated successfully!");
+    alert("✅ Product saved live!");
   };
 
   const handleEdit = (prod) => {
@@ -168,22 +169,22 @@ export default function Home() {
   return (
     <div style={{ padding: "16px", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", backgroundColor: "#f8fafc", minHeight: "100vh", maxWidth: "500px", margin: "0 auto", paddingBottom: "40px" }}>
       
-      {/* App Header */}
-      <div style={{ background: "#ffffff", padding: "18px 16px", borderRadius: "20px", textAlign: "center", marginBottom: "16px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+      {/* App Header with Hidden Key Button */}
+      <div style={{ background: "#ffffff", padding: "18px 16px", borderRadius: "20px", textAlign: "center", marginBottom: "16px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", position: "relative" }}>
+        
+        {/* Passcode Lock/Unlock Button */}
+        <button 
+          onClick={handleOwnerLoginToggle}
+          title="Owner Login"
+          style={{ position: "absolute", top: "14px", right: "14px", background: isOwner ? "#dbeafe" : "#f1f5f9", color: isOwner ? "#1d4ed8" : "#94a3b8", border: "none", borderRadius: "10px", padding: "6px 10px", fontSize: "12px", cursor: "pointer", fontWeight: "bold" }}>
+          {isOwner ? "👑 Owner On" : "🔑 Lock"}
+        </button>
+
         <h1 style={{ margin: "0 0 2px", fontSize: "24px", fontWeight: "800", color: "#0f172a" }}>Yeshi Market</h1>
         <p style={{ margin: "0", color: "#64748b", fontSize: "13px", fontWeight: "500" }}>Addis Ababa • Direct Delivery 🚚</p>
-        
-        {/* Owner Badge */}
-        {isOwner && (
-          <div style={{ marginTop: "12px" }}>
-            <span style={{ background: "#dbeafe", color: "#1e40af", padding: "5px 14px", borderRadius: "20px", fontSize: "11px", fontWeight: "700", display: "inline-block" }}>
-              👑 Owner Admin Active (@bekivisuals1221)
-            </span>
-          </div>
-        )}
       </div>
 
-      {/* OWNER ADMIN PANEL */}
+      {/* OWNER ADMIN PANEL - Appears when unlocked with 1221 */}
       {isOwner && (
         <div style={{ background: "#eff6ff", border: "2px dashed #2563eb", padding: "16px", borderRadius: "20px", marginBottom: "20px" }}>
           <h3 style={{ margin: "0 0 12px", color: "#1e40af", fontSize: "16px" }}>{editingId ? "✏️ Edit Product Details" : "➕ Add New Product"}</h3>
@@ -199,14 +200,14 @@ export default function Home() {
             {/* Photo Upload */}
             <div style={{ background: "#fff", padding: "12px", borderRadius: "10px", border: "1px solid #cbd5e1" }}>
               <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#475569", marginBottom: "6px" }}>
-                📷 Upload Photo to Supabase Storage:
+                📷 Select Photo from Phone / PC Gallery:
               </label>
               <input type="file" accept="image/*" onChange={handleImageFileUpload} style={{ fontSize: "12px" }} />
               
               {newProduct.image && (
                 <div style={{ marginTop: "8px", display: "flex", alignItems: "center", gap: "8px" }}>
                   <img src={newProduct.image} alt="Preview" style={{ width: "44px", height: "44px", objectFit: "cover", borderRadius: "8px" }} />
-                  <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: "700" }}>✓ Image Ready</span>
+                  <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: "700" }}>✓ Image Selected</span>
                 </div>
               )}
             </div>
@@ -283,6 +284,7 @@ export default function Home() {
               
               {item.desc && <p style={{ margin: "0 0 12px", color: "#64748b", fontSize: "12px", lineHeight: "1.4" }}>{item.desc}</p>}
 
+              {/* Owner Action Buttons vs Customer 1-Tap Order Button */}
               {isOwner ? (
                 <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
                   <button onClick={() => handleEdit(item)} style={{ flex: 1, background: "#dbeafe", color: "#1d4ed8", border: "none", padding: "10px", borderRadius: "10px", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}>
