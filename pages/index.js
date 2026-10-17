@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 // Your Supabase Configuration
 const SUPABASE_URL = "https://gisizxadtwdxydcpemli.supabase.co";
-const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY_HERE"; // Get this from Supabase: Settings -> API
+const SUPABASE_ANON_KEY = "sb_publishable_Vt__Fg-loooyMIuVbbRmBw_aTn_SM6j";
 
 const INITIAL_PRODUCTS = [
   { id: 1, name: "1Kg High Quality Organic Peanut Butter", price: 500, category: "Food & Snacks", image: "https://i.ibb.co/mS2QZ3H/image.jpg", desc: "100% natural organic peanut butter." },
