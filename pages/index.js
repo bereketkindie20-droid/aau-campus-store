@@ -29,7 +29,7 @@ export default function Home() {
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
-    // 1. Auto-detect inside Telegram App
+    // Auto-detect inside Telegram WebApp
     if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
@@ -103,7 +103,7 @@ export default function Home() {
       if (res.ok) {
         const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/products/${fileName}`;
         setNewProduct((prev) => ({ ...prev, image: publicUrl }));
-        alert("📷 Photo uploaded to Supabase!");
+        alert("📷 Photo uploaded to Supabase cloud storage!");
       } else {
         // Base64 fallback if bucket fails
         const reader = new FileReader();
@@ -169,7 +169,7 @@ export default function Home() {
   return (
     <div style={{ padding: "16px", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", backgroundColor: "#f8fafc", minHeight: "100vh", maxWidth: "500px", margin: "0 auto", paddingBottom: "40px" }}>
       
-      {/* App Header with Hidden Key Button */}
+      {/* App Header */}
       <div style={{ background: "#ffffff", padding: "18px 16px", borderRadius: "20px", textAlign: "center", marginBottom: "16px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", position: "relative" }}>
         
         {/* Passcode Lock/Unlock Button */}
@@ -184,7 +184,7 @@ export default function Home() {
         <p style={{ margin: "0", color: "#64748b", fontSize: "13px", fontWeight: "500" }}>Addis Ababa • Direct Delivery 🚚</p>
       </div>
 
-      {/* OWNER ADMIN PANEL - Appears when unlocked with 1221 */}
+      {/* OWNER ADMIN PANEL */}
       {isOwner && (
         <div style={{ background: "#eff6ff", border: "2px dashed #2563eb", padding: "16px", borderRadius: "20px", marginBottom: "20px" }}>
           <h3 style={{ margin: "0 0 12px", color: "#1e40af", fontSize: "16px" }}>{editingId ? "✏️ Edit Product Details" : "➕ Add New Product"}</h3>
@@ -206,7 +206,7 @@ export default function Home() {
               
               {newProduct.image && (
                 <div style={{ marginTop: "8px", display: "flex", alignItems: "center", gap: "8px" }}>
-                  <img src={newProduct.image} alt="Preview" style={{ width: "44px", height: "44px", objectFit: "cover", borderRadius: "8px" }} />
+                  <img src={newProduct.image} alt="Preview" style={{ width: "44px", height: "44px", objectFit: "contain", borderRadius: "8px" }} />
                   <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: "700" }}>✓ Image Selected</span>
                 </div>
               )}
@@ -262,12 +262,13 @@ export default function Home() {
         {filtered.map((item) => (
           <div key={item.id} style={{ background: "#ffffff", borderRadius: "18px", overflow: "hidden", boxShadow: "0 2px 10px rgba(0,0,0,0.03)", display: "flex", flexDirection: "column" }}>
             
-            <div style={{ position: "relative", width: "100%", height: "180px", background: "#f1f5f9" }}>
+            {/* FULL NO-CROP IMAGE CONTAINER */}
+            <div style={{ position: "relative", width: "100%", height: "230px", background: "#f8fafc", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <img 
                 src={item.image} 
                 alt={item.name} 
                 onClick={() => setZoomedImage(item.image)}
-                style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "pointer" }} 
+                style={{ width: "100%", height: "100%", objectFit: "contain", padding: "8px", cursor: "pointer" }} 
               />
               <button 
                 onClick={() => setZoomedImage(item.image)}
@@ -307,7 +308,7 @@ export default function Home() {
         ))}
       </div>
 
-      {/* 🔍 PHOTO ZOOM MODAL */}
+      {/* PHOTO ZOOM MODAL */}
       {zoomedImage && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(15, 23, 42, 0.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", zIndex: 3000 }} onClick={() => setZoomedImage(null)}>
           <div style={{ position: "relative", maxWidth: "90%", maxHeight: "80%" }} onClick={(e) => e.stopPropagation()}>
