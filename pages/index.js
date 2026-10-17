@@ -47,7 +47,7 @@ export default function Home() {
     fetchProductsFromSupabase();
   }, []);
 
-  // Fetch live products from Supabase
+  // Fetch live products from Supabase database
   const fetchProductsFromSupabase = async () => {
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/products?select=*`, {
@@ -117,22 +117,77 @@ export default function Home() {
     }
   };
 
+  // Save or Update Product LIVE in Supabase Database for ALL users
   const handleAddOrUpdate = async (e) => {
     e.preventDefault();
     if (!newProduct.name || !newProduct.price) return alert("Please enter product name and price.");
 
-    let updatedList = [];
-    if (editingId) {
-      updatedList = products.map((p) => p.id === editingId ? { ...newProduct, id: editingId, price: Number(newProduct.price) } : p);
-      setEditingId(null);
-    } else {
-      const created = { ...newProduct, id: Date.now(), price: Number(newProduct.price) };
-      updatedList = [...products, created];
-    }
+    setIsSaving(true);
 
-    setProducts(updatedList);
-    setNewProduct({ name: "", price: "", category: "Food & Snacks", image: "", desc: "" });
-    alert("✅ Product saved live!");
+    try {
+      if (editingId) {
+        // UPDATE existing product in Supabase database
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/products?id=eq.${editingId}`, {
+          method: "PATCH",
+          headers: {
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify({
+            name: newProduct.name,
+            price: Number(newProduct.price),
+            category: newProduct.category,
+            image: newProduct.image,
+            desc: newProduct.desc
+          })
+        });
+
+        if (res.ok) {
+          alert("✅ Product updated live for EVERYONE!");
+        } else {
+          alert("⚠️ Failed to update database. Ensure table exists in Supabase.");
+        }
+      } else {
+        // INSERT new product into Supabase database
+        const newId = Date.now();
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/products`, {
+          method: "POST",
+          headers: {
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify({
+            id: newId,
+            name: newProduct.name,
+            price: Number(newProduct.price),
+            category: newProduct.category,
+            image: newProduct.image,
+            desc: newProduct.desc
+          })
+        });
+
+        if (res.ok) {
+          alert("✅ Product published live for EVERYONE!");
+        } else {
+          alert("⚠️ Failed to publish product to database.");
+        }
+      }
+
+      // Re-fetch updated list from Supabase
+      await fetchProductsFromSupabase();
+      setEditingId(null);
+      setNewProduct({ name: "", price: "", category: "Food & Snacks", image: "", desc: "" });
+
+    } catch (e) {
+      console.error(e);
+      alert("Error saving product to database.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleEdit = (prod) => {
@@ -141,10 +196,25 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleDelete = (id) => {
-    if (confirm("Delete this product permanently?")) {
-      const updatedList = products.filter((p) => p.id !== id);
-      setProducts(updatedList);
+  // Delete Product LIVE from Supabase Database
+  const handleDelete = async (id) => {
+    if (confirm("Delete this product permanently for everyone?")) {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/products?id=eq.${id}`, {
+          method: "DELETE",
+          headers: {
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+
+        if (res.ok) {
+          alert("🗑️ Product deleted for everyone!");
+          fetchProductsFromSupabase();
+        }
+      } catch (e) {
+        alert("Error deleting product.");
+      }
     }
   };
 
@@ -215,7 +285,7 @@ export default function Home() {
             <textarea placeholder="Description" value={newProduct.desc} onChange={(e) => setNewProduct({ ...newProduct, desc: e.target.value })} style={{ padding: "10px", borderRadius: "10px", border: "1px solid #cbd5e1", fontSize: "14px" }} />
             
             <button type="submit" disabled={isSaving} style={{ background: "#2563eb", color: "#fff", border: "none", padding: "12px", borderRadius: "10px", fontWeight: "700", cursor: "pointer", fontSize: "14px" }}>
-              {editingId ? "Save Changes" : "Publish to Store"}
+              {isSaving ? "Uploading Image..." : (editingId ? "Save Changes Live" : "Publish Live to Store")}
             </button>
             {editingId && (
               <button type="button" onClick={() => { setEditingId(null); setNewProduct({ name: "", price: "", category: "Food & Snacks", image: "", desc: "" }); }} style={{ background: "#e2e8f0", border: "none", padding: "8px", borderRadius: "10px", cursor: "pointer", fontSize: "13px" }}>
@@ -262,7 +332,7 @@ export default function Home() {
         {filtered.map((item) => (
           <div key={item.id} style={{ background: "#ffffff", borderRadius: "18px", overflow: "hidden", boxShadow: "0 2px 10px rgba(0,0,0,0.03)", display: "flex", flexDirection: "column" }}>
             
-            {/* FULL NO-CROP IMAGE CONTAINER */}
+            {/* NO-CROP IMAGE CONTAINER */}
             <div style={{ position: "relative", width: "100%", height: "230px", background: "#f8fafc", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <img 
                 src={item.image} 
